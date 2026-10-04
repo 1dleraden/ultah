@@ -135,6 +135,10 @@ export default function Home() {
   // Active Nav Section
   const [activeSection, setActiveSection] = useState('hero');
 
+  // Mobile Navigation & Audio Dock Controls
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAudioDockMinimized, setIsAudioDockMinimized] = useState(false);
+
   // Ambient Particles Canvas Ref
   const canvasRef = useRef(null);
 
@@ -598,6 +602,10 @@ export default function Home() {
               MAKE A WISH
             </a>
             <span className="nav-sep">·</span>
+            <a href="#reflections" className={`nav-link ${activeSection === 'reflections' ? 'active' : ''}`}>
+              ABOUT YOU
+            </a>
+            <span className="nav-sep">·</span>
             <a href="#wishes" className={`nav-link ${activeSection === 'wishes' ? 'active' : ''}`}>
               WISHES
             </a>
@@ -616,10 +624,124 @@ export default function Home() {
                 <i />
                 <i />
               </span>
-              <span>{isPlaying ? 'Pause Music' : 'Play Song'}</span>
+              <span className="sound-label">{isPlaying ? 'Pause' : 'Music'}</span>
+            </button>
+
+            <button
+              type="button"
+              className={`nav-mobile-toggle ${isMobileMenuOpen ? 'is-active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle Mobile Navigation"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`} />
             </button>
           </div>
         </div>
+
+        {/* ─── LUXURY MOBILE NAVIGATION DRAWER ─── */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              className="nav-mobile-menu"
+              initial={{ opacity: 0, y: -12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.98 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="mobile-menu-header">
+                <div className="mobile-menu-crest">🌹</div>
+                <div className="mobile-menu-meta">
+                  <span className="mobile-menu-title gold-gradient-text">Felisha's Birthday</span>
+                  <span className="mobile-menu-date">14 · OCTOBER · WITH ALL MY LOVE</span>
+                </div>
+              </div>
+
+              <div className="mobile-menu-links">
+                <a
+                  href="#hero"
+                  className={`mobile-nav-item ${activeSection === 'hero' ? 'active' : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="mobile-item-icon">🌹</span>
+                  <div className="mobile-item-text">
+                    <span className="mobile-item-title">Home</span>
+                    <span className="mobile-item-sub">Birthday Tribute</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
+                </a>
+
+                <a
+                  href="#gallery"
+                  className={`mobile-nav-item ${activeSection === 'gallery' ? 'active' : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="mobile-item-icon">📷</span>
+                  <div className="mobile-item-text">
+                    <span className="mobile-item-title">Memories</span>
+                    <span className="mobile-item-sub">Our Sweetest Moments</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
+                </a>
+
+                <a
+                  href="#letter"
+                  className={`mobile-nav-item ${activeSection === 'letter' ? 'active' : ''}`}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsEnvelopeOpen(true);
+                  }}
+                >
+                  <span className="mobile-item-icon">💌</span>
+                  <div className="mobile-item-text">
+                    <span className="mobile-item-title">Love Letter</span>
+                    <span className="mobile-item-sub">From the Heart of Raden</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
+                </a>
+
+                <a
+                  href="#candle"
+                  className={`mobile-nav-item ${activeSection === 'candle' ? 'active' : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="mobile-item-icon">🎂</span>
+                  <div className="mobile-item-text">
+                    <span className="mobile-item-title">Make a Wish</span>
+                    <span className="mobile-item-sub">Blow Your Birthday Candle</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
+                </a>
+
+                <a
+                  href="#reflections"
+                  className={`mobile-nav-item ${activeSection === 'reflections' ? 'active' : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="mobile-item-icon">❤️</span>
+                  <div className="mobile-item-text">
+                    <span className="mobile-item-title">Why I Love You</span>
+                    <span className="mobile-item-sub">Three Little Things</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
+                </a>
+
+                <a
+                  href="#wishes"
+                  className={`mobile-nav-item ${activeSection === 'wishes' ? 'active' : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="mobile-item-icon">✍️</span>
+                  <div className="mobile-item-text">
+                    <span className="mobile-item-title">Sweet Wishes</span>
+                    <span className="mobile-item-sub">Guestbook & Blessings</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* ─── MAIN CONTENT ─── */}
@@ -714,16 +836,31 @@ export default function Home() {
 
               <div className="hero-details-row">
                 <div className="hero-detail-item">
-                  <span className="detail-label">OUR SPECIAL DAY</span>
-                  <span className="detail-value">October 14</span>
+                  <div className="detail-icon-box">
+                    <i className="fa-regular fa-calendar-days" />
+                  </div>
+                  <div className="detail-body">
+                    <span className="detail-label">OUR SPECIAL DAY</span>
+                    <span className="detail-value">October 14</span>
+                  </div>
                 </div>
                 <div className="hero-detail-item">
-                  <span className="detail-label">WITH ALL MY HEART</span>
-                  <span className="detail-value">From Raden to Felisha</span>
+                  <div className="detail-icon-box">
+                    <i className="fa-solid fa-heart" />
+                  </div>
+                  <div className="detail-body">
+                    <span className="detail-label">WITH ALL MY HEART</span>
+                    <span className="detail-value">From Raden to Felisha</span>
+                  </div>
                 </div>
                 <div className="hero-detail-item">
-                  <span className="detail-label">OUR SONG</span>
-                  <span className="detail-value">{PLAYLIST[currentTrackIndex].title}</span>
+                  <div className="detail-icon-box">
+                    <i className="fa-solid fa-music" />
+                  </div>
+                  <div className="detail-body">
+                    <span className="detail-label">OUR SONG</span>
+                    <span className="detail-value">{PLAYLIST[currentTrackIndex].title}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -1268,7 +1405,7 @@ export default function Home() {
       </footer>
 
       {/* ─── FLOATING AUDIO DOCK WITH PROGRESS SCRUBBER ─── */}
-      <div className={`audio-dock ${isPlaying ? 'is-playing' : ''}`}>
+      <div className={`audio-dock ${isPlaying ? 'is-playing' : ''} ${isAudioDockMinimized ? 'is-minimized' : ''}`}>
         <audio
           ref={audioRef}
           preload="auto"
@@ -1278,59 +1415,97 @@ export default function Home() {
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
         />
-        <div className="dock-inner">
-          <div className="dock-disc" onClick={togglePlay} role="button" tabIndex={0}>
-            <i className="fa-solid fa-compact-disc" />
-          </div>
 
-          <div className="dock-track-info">
-            <span className="track-label">OUR SONG</span>
-            <span className="track-title">{PLAYLIST[currentTrackIndex].title}</span>
-            <div className="track-scrubber-row">
-              <span className="track-time">{formatTime(currentTime)}</span>
-              <input
-                type="range"
-                className="track-scrubber"
-                min={0}
-                max={duration || 100}
-                value={currentTime}
-                onChange={handleSeek}
-                aria-label="Music Progress"
-              />
-              <span className="track-time">{formatTime(duration)}</span>
+        {isAudioDockMinimized ? (
+          <button
+            type="button"
+            className="dock-mini-pill"
+            onClick={() => setIsAudioDockMinimized(false)}
+            aria-label="Expand Music Player"
+          >
+            <div className="dock-disc mini">
+              <i className="fa-solid fa-compact-disc" />
+            </div>
+            <div className="dock-mini-info">
+              <span className="dock-mini-title">{PLAYLIST[currentTrackIndex].title}</span>
+              <span className="dock-mini-status">
+                {isPlaying ? (
+                  <span className="sound-bars mini" aria-hidden="true">
+                    <i /><i /><i />
+                  </span>
+                ) : (
+                  <span>Paused</span>
+                )}
+              </span>
+            </div>
+            <i className="fa-solid fa-chevron-up dock-mini-expand" />
+          </button>
+        ) : (
+          <div className="dock-inner">
+            <div className="dock-disc" onClick={togglePlay} role="button" tabIndex={0} title={isPlaying ? 'Pause' : 'Play'}>
+              <i className="fa-solid fa-compact-disc" />
+            </div>
+
+            <div className="dock-track-info">
+              <div className="dock-track-header">
+                <span className="track-label">OUR SONG</span>
+                <button
+                  type="button"
+                  className="dock-minimize-btn"
+                  onClick={() => setIsAudioDockMinimized(true)}
+                  aria-label="Minimize Music Player"
+                  title="Minimize"
+                >
+                  <i className="fa-solid fa-chevron-down" />
+                </button>
+              </div>
+              <span className="track-title">{PLAYLIST[currentTrackIndex].title}</span>
+              <div className="track-scrubber-row">
+                <span className="track-time">{formatTime(currentTime)}</span>
+                <input
+                  type="range"
+                  className="track-scrubber"
+                  min={0}
+                  max={duration || 100}
+                  value={currentTime}
+                  onChange={handleSeek}
+                  aria-label="Music Progress"
+                />
+                <span className="track-time">{formatTime(duration)}</span>
+              </div>
+            </div>
+
+            <div className="dock-controls">
+              <button
+                type="button"
+                className="dock-btn"
+                onClick={prevTrack}
+                title="Previous Track"
+                aria-label="Previous Track"
+              >
+                <i className="fa-solid fa-backward-step" />
+              </button>
+              <button
+                type="button"
+                className="dock-btn play-btn"
+                onClick={togglePlay}
+                title="Play Music"
+                aria-label="Play Music"
+              >
+                <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'}`} />
+              </button>
+              <button
+                type="button"
+                className="dock-btn"
+                onClick={nextTrack}
+                title="Next Track"
+                aria-label="Next Track"
+              >
+                <i className="fa-solid fa-forward-step" />
+              </button>
             </div>
           </div>
-
-          <div className="dock-controls">
-            <button
-              type="button"
-              className="dock-btn"
-              onClick={prevTrack}
-              title="Previous Track"
-              aria-label="Previous Track"
-            >
-              <i className="fa-solid fa-backward-step" />
-            </button>
-            <button
-              type="button"
-              className="dock-btn play-btn"
-              onClick={togglePlay}
-              title="Play Music"
-              aria-label="Play Music"
-            >
-              <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'}`} />
-            </button>
-            <button
-              type="button"
-              className="dock-btn"
-              onClick={nextTrack}
-              title="Next Track"
-              aria-label="Next Track"
-            >
-              <i className="fa-solid fa-forward-step" />
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* ─── IMAGE LIGHTBOX MODAL WITH KEYBOARD NAVIGATION ─── */}
