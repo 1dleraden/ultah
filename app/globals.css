@@ -1484,25 +1484,51 @@ section {
   50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
 }
 
+/* ─── LUXURY BIRTHDAY CAKE APPARATUS ─── */
+.birthday-cake-apparatus,
 .candle-apparatus {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 0.5rem;
   outline: none;
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-smooth), filter var(--transition-smooth);
 }
+.birthday-cake-apparatus:hover,
 .candle-apparatus:hover {
-  transform: scale(1.02);
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Cake Candles Cluster (3 Candles) */
+.cake-candles-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 24px;
+  position: relative;
+  z-index: 10;
+  margin-bottom: -5px;
+}
+.cake-candle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.cake-candle.candle-left {
+  transform: rotate(-3deg);
+}
+.cake-candle.candle-right {
+  transform: rotate(3deg);
 }
 
 /* Flame & Core */
 .candle-flame-wrapper {
   position: relative;
-  width: 22px;
-  height: 40px;
+  width: 20px;
+  height: 38px;
   margin-bottom: 2px;
   transition: opacity 0.5s ease, transform 0.5s ease;
   transform-origin: center bottom;
@@ -1513,79 +1539,274 @@ section {
   background: linear-gradient(180deg, #fffceb 0%, #ffc107 40%, #fb8500 70%, #d00000 100%);
   border-radius: 50% 50% 35% 35% / 80% 80% 30% 30%;
   box-shadow: 
-    0 0 18px rgba(255, 193, 7, 0.9),
-    0 0 40px rgba(251, 133, 0, 0.6);
+    0 0 16px rgba(255, 193, 7, 0.95),
+    0 0 35px rgba(251, 133, 0, 0.65),
+    0 0 55px rgba(255, 220, 100, 0.4);
   animation: flameFlicker 2.5s infinite ease-in-out;
 }
 .flame-glow {
   position: absolute;
-  inset: -12px;
-  background: radial-gradient(circle, rgba(255, 220, 100, 0.45) 0%, transparent 70%);
+  inset: -14px;
+  background: radial-gradient(circle, rgba(255, 220, 100, 0.55) 0%, rgba(251, 133, 0, 0.15) 50%, transparent 75%);
   border-radius: 50%;
   pointer-events: none;
 }
 @keyframes flameFlicker {
   0%, 100% { transform: scale(1) rotate(-1deg); }
-  25% { transform: scale(1.04, 0.96) rotate(1.5deg); }
-  50% { transform: scale(0.97, 1.03) rotate(-0.5deg); }
-  75% { transform: scale(1.02, 0.98) rotate(1deg); }
+  25% { transform: scale(1.05, 0.95) rotate(1.5deg); }
+  50% { transform: scale(0.96, 1.04) rotate(-0.5deg); }
+  75% { transform: scale(1.03, 0.97) rotate(1deg); }
 }
 
 /* Wick */
 .candle-wick {
   width: 2.5px;
-  height: 12px;
+  height: 10px;
   background: #242226;
   border-radius: 1px;
 }
 
-/* Taper Body */
-.candle-taper {
-  width: 28px;
-  height: 160px;
-  background: linear-gradient(90deg, #2b2733 0%, #eae6dc 35%, #f6f3eb 60%, #b8b3a7 100%);
-  border-radius: 4px 4px 1px 1px;
-  box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 10px 20px rgba(0,0,0,0.5);
+/* Cake Candle Sticks */
+.cake-candle-stick {
+  border-radius: 3px 3px 1px 1px;
+  box-shadow: inset -1px 0 3px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.6);
   position: relative;
 }
-.candle-wax-drip {
-  position: absolute;
-  top: 8px;
-  left: 4px;
-  width: 6px;
-  height: 24px;
-  background: #f6f3eb;
-  border-radius: 4px;
-  opacity: 0.85;
+.candle-stick-center {
+  width: 14px;
+  height: 52px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #ffffff 0px,
+    #ffffff 4px,
+    #dfba73 4px,
+    #dfba73 8px,
+    #fae8ba 8px,
+    #fae8ba 10px
+  );
+}
+.candle-stick-left,
+.candle-stick-right {
+  width: 12px;
+  height: 42px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #fff5f6 0px,
+    #fff5f6 4px,
+    #e63946 4px,
+    #e63946 7px,
+    #ffb3c1 7px,
+    #ffb3c1 9px
+  );
 }
 
-/* Luxury Brass Stand */
-.candlestick-base {
+/* Cake Toppings (Strawberries, Rose, Cream swirls) */
+.cake-toppings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+  z-index: 8;
+  margin-bottom: -10px;
+}
+.topping-item {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+  animation: floatTopping 3s infinite ease-in-out alternate;
+  user-select: none;
+}
+.topping-rose {
+  font-size: 1.55rem;
+  margin-top: -6px;
+}
+.topping-strawberry.left {
+  animation-delay: 0.3s;
+}
+.topping-strawberry.right {
+  animation-delay: 0.6s;
+}
+@keyframes floatTopping {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-3px) scale(1.05); }
+}
+.topping-swirl {
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle, #fffdf8 30%, #fae5ce 75%, #dfba73 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* Cake Tier Shared Styles */
+.cake-tier {
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 140px;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid rgba(223, 186, 115, 0.35);
 }
-.base-rim {
-  width: 48px;
-  height: 8px;
-  background: linear-gradient(90deg, #7a5c1e 0%, #dfba73 40%, #fae8ba 60%, #5e4614 100%);
-  border-radius: 2px;
+
+/* Tier Top (Tier 2) */
+.tier-top {
+  width: 185px;
+  height: 68px;
+  background: linear-gradient(180deg, #3d1420 0%, #260c13 55%, #18070c 100%);
+  border-radius: 12px 12px 3px 3px;
+  z-index: 7;
 }
-.base-stem {
-  width: 18px;
-  height: 28px;
-  background: linear-gradient(90deg, #5e4614 0%, #c59e37 50%, #4a360e 100%);
+
+/* Tier Bottom (Tier 1) */
+.tier-bottom {
+  width: 260px;
+  height: 82px;
+  background: linear-gradient(180deg, #300f18 0%, #1e090e 60%, #120508 100%);
+  border-radius: 14px 14px 4px 4px;
+  margin-top: -3px;
+  z-index: 6;
 }
-.base-foot {
-  width: 110px;
-  height: 12px;
-  background: linear-gradient(90deg, #5e4614 0%, #dfba73 35%, #fff5d6 50%, #85631b 80%, #3d2c0b 100%);
-  border-radius: 6px 6px 2px 2px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.95);
+
+/* Glaze Drips */
+.cake-glaze-drip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background: linear-gradient(180deg, #fffcf5 0%, #faebdc 60%, #f3d7c3 100%);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: space-around;
+  padding: 0 4px;
+}
+.cake-glaze-drip .drip {
+  display: block;
+  background: inherit;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+.glaze-top .drip.d1 { width: 14px; height: 16px; margin-top: 10px; }
+.glaze-top .drip.d2 { width: 16px; height: 24px; margin-top: 10px; }
+.glaze-top .drip.d3 { width: 13px; height: 14px; margin-top: 10px; }
+.glaze-top .drip.d4 { width: 17px; height: 26px; margin-top: 10px; }
+.glaze-top .drip.d5 { width: 14px; height: 18px; margin-top: 10px; }
+
+.glaze-bottom {
+  height: 24px;
+}
+.glaze-bottom .drip.d1 { width: 15px; height: 20px; margin-top: 12px; }
+.glaze-bottom .drip.d2 { width: 18px; height: 28px; margin-top: 12px; }
+.glaze-bottom .drip.d3 { width: 14px; height: 16px; margin-top: 12px; }
+.glaze-bottom .drip.d4 { width: 19px; height: 32px; margin-top: 12px; }
+.glaze-bottom .drip.d5 { width: 15px; height: 22px; margin-top: 12px; }
+.glaze-bottom .drip.d6 { width: 18px; height: 27px; margin-top: 12px; }
+.glaze-bottom .drip.d7 { width: 14px; height: 17px; margin-top: 12px; }
+
+/* Tier Inscriptions & Ribbons */
+.tier-decor {
+  margin-top: 26px;
+  z-index: 2;
+}
+.tier-monogram {
+  font-family: var(--font-royal);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: #dfba73;
+  text-shadow: 0 0 10px rgba(223, 186, 115, 0.7);
+  font-weight: 600;
+}
+
+.gold-ribbon-belt {
+  margin-top: 28px;
+  width: 100%;
+  height: 18px;
+  background: linear-gradient(
+    90deg,
+    #5e4614 0%,
+    #dfba73 25%,
+    #fff5db 50%,
+    #dfba73 75%,
+    #5e4614 100%
+  );
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.ribbon-sparkle {
+  font-family: var(--font-serif);
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  color: #1a1208;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+}
+
+/* Frosting Pearls lining tiers */
+.tier-pearls {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  padding: 0 6px 3px;
+  z-index: 3;
+}
+.tier-pearls i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  background: radial-gradient(circle at 35% 35%, #fffdf8 0%, #dfba73 60%, #85631b 100%);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+/* Luxury Gilded Cake Pedestal / Stand */
+.cake-stand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 320px;
+  margin-top: -2px;
+  z-index: 5;
+}
+.cake-stand-platter {
+  width: 310px;
+  height: 14px;
+  background: linear-gradient(90deg, #5e4614 0%, #a47d28 15%, #dfba73 35%, #fff8e3 50%, #dfba73 65%, #a47d28 85%, #5e4614 100%);
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), 0 0 15px rgba(223, 186, 115, 0.35);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.platter-edge-beading {
+  width: 95%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #ffffff 0px, #ffffff 3px, transparent 3px, transparent 7px);
+  opacity: 0.8;
+}
+.cake-stand-stem {
+  width: 32px;
+  height: 36px;
+  background: linear-gradient(90deg, #44310d 0%, #aa7724 35%, #f6e09e 55%, #7a5818 80%, #302208 100%);
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+  margin-top: -1px;
+}
+.cake-stand-base {
+  width: 175px;
+  height: 14px;
+  background: linear-gradient(90deg, #44310d 0%, #aa7724 20%, #dfba73 40%, #fff8e3 50%, #aa7724 75%, #44310d 100%);
+  border-radius: 8px 8px 3px 3px;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.95);
+  margin-top: -1px;
 }
 
 /* Extinguished State */
+.birthday-cake-apparatus.is-extinguished .candle-flame-wrapper,
 .candle-apparatus.is-extinguished .candle-flame-wrapper {
   opacity: 0;
   transform: scale(0.2) translateY(-10px);
@@ -1605,9 +1826,16 @@ section {
   pointer-events: none;
   opacity: 0;
 }
+.birthday-cake-apparatus.is-extinguished .candle-smoke,
 .candle-apparatus.is-extinguished .candle-smoke {
   opacity: 1;
   animation: smokeRise 2.5s forwards ease-out;
+}
+.cake-candle.candle-left .candle-smoke {
+  animation-delay: 0.1s;
+}
+.cake-candle.candle-right .candle-smoke {
+  animation-delay: 0.18s;
 }
 .candle-smoke span {
   display: block;
@@ -1622,6 +1850,9 @@ section {
   0% { transform: translateY(0) scale(1); opacity: 0.8; }
   100% { transform: translateY(-50px) scale(3.5); opacity: 0; }
 }
+
+/* Legacy fallback classes */
+.candle-taper, .candlestick-base { display: none; }
 
 /* Prompt Button */
 .candle-prompt {

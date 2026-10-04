@@ -5,12 +5,12 @@ import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 
 const PLAYLIST = [
   {
-    title: 'Always — Daniel Caesar',
-    src: encodeURI('/Daniel Caesar - Always (Lyrics).mp3'),
-  },
-  {
     title: 'Aku Milikmu — Dewa 19',
     src: encodeURI('/Aku Milikmu - Dewa 19 (Lyrics Video).mp3'),
+  },
+  {
+    title: 'Always — Daniel Caesar',
+    src: encodeURI('/Daniel Caesar - Always (Lyrics).mp3'),
   },
   {
     title: 'Kangen — Dewa 19',
@@ -167,12 +167,13 @@ export default function Home() {
     if (isPreloaderEntered) return;
     triggerRomanticSparks({ x: 0.5, y: 0.5 });
 
-    // Start music smoothly
+    // Start music smoothly with Aku Milikmu
     if (audioRef.current) {
-      if (!audioRef.current.src || audioRef.current.src === '' || audioRef.current.src === window.location.href) {
-        audioRef.current.src = PLAYLIST[0].src;
-        audioRef.current.load();
-      }
+      const akuMilikmuIdx = PLAYLIST.findIndex((t) => t.title.toLowerCase().includes('aku milikmu'));
+      const targetIdx = akuMilikmuIdx !== -1 ? akuMilikmuIdx : 0;
+      setCurrentTrackIndex(targetIdx);
+      audioRef.current.src = PLAYLIST[targetIdx].src;
+      audioRef.current.load();
       const promise = audioRef.current.play();
       if (promise !== undefined) {
         promise.then(() => setIsPlaying(true)).catch((err) => console.warn('Autoplay prevented:', err));
@@ -1111,14 +1112,14 @@ export default function Home() {
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
             >
               <span className="chapter-number">MAKE A BIRTHDAY WISH</span>
-              <h2 className="section-heading gold-gradient-text">Blow Out Your Birthday Candle</h2>
+              <h2 className="section-heading gold-gradient-text">Blow Out Your Birthday Cake</h2>
               <div className="regal-divider mini">
                 <span className="divider-line" />
                 <span className="divider-crest">🎂</span>
                 <span className="divider-line" />
               </div>
               <p className="section-desc">
-                Close your eyes for a moment, my love, make the most beautiful wish in your heart... then touch the flame to blow it out.
+                Close your eyes for a moment, my love, make the most beautiful wish in your heart... then touch the cake to blow out your candles.
               </p>
             </motion.header>
 
@@ -1132,7 +1133,7 @@ export default function Home() {
               <div className="candle-halo" aria-hidden="true" />
 
               <div
-                className={`candle-apparatus ${isExtinguished ? 'is-extinguished' : ''}`}
+                className={`birthday-cake-apparatus ${isExtinguished ? 'is-extinguished' : ''}`}
                 role="button"
                 tabIndex={0}
                 onClick={handleExtinguishCandle}
@@ -1142,28 +1143,108 @@ export default function Home() {
                     handleExtinguishCandle(e);
                   }
                 }}
-                aria-label="Touch to blow birthday candle"
+                aria-label="Touch cake to blow out candles"
               >
-                <div className="candle-smoke" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
+                {/* 3 Birthday Candles on Top of Cake */}
+                <div className="cake-candles-row">
+                  {/* Left Candle */}
+                  <div className="cake-candle candle-left">
+                    <div className="candle-smoke" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                    <div className="candle-flame-wrapper">
+                      <div className="flame-core" />
+                      <div className="flame-glow" />
+                    </div>
+                    <div className="candle-wick" />
+                    <div className="cake-candle-stick candle-stick-left" />
+                  </div>
+
+                  {/* Center Candle (Tallest) */}
+                  <div className="cake-candle candle-center">
+                    <div className="candle-smoke" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                    <div className="candle-flame-wrapper">
+                      <div className="flame-core" />
+                      <div className="flame-glow" />
+                    </div>
+                    <div className="candle-wick" />
+                    <div className="cake-candle-stick candle-stick-center" />
+                  </div>
+
+                  {/* Right Candle */}
+                  <div className="cake-candle candle-right">
+                    <div className="candle-smoke" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                    <div className="candle-flame-wrapper">
+                      <div className="flame-core" />
+                      <div className="flame-glow" />
+                    </div>
+                    <div className="candle-wick" />
+                    <div className="cake-candle-stick candle-stick-right" />
+                  </div>
                 </div>
 
-                <div className="candle-flame-wrapper">
-                  <div className="flame-core" />
-                  <div className="flame-glow" />
+                {/* Cake Garnish: Strawberries, Rose & Cream Swirls */}
+                <div className="cake-toppings">
+                  <span className="topping-item topping-strawberry left">🍓</span>
+                  <span className="topping-swirl" />
+                  <span className="topping-item topping-rose">🌹</span>
+                  <span className="topping-swirl" />
+                  <span className="topping-item topping-strawberry right">🍓</span>
                 </div>
-                <div className="candle-wick" />
 
-                <div className="candle-taper">
-                  <div className="candle-wax-drip" />
+                {/* Tier 2: Top Tier */}
+                <div className="cake-tier tier-top">
+                  <div className="cake-glaze-drip glaze-top">
+                    <span className="drip d1" />
+                    <span className="drip d2" />
+                    <span className="drip d3" />
+                    <span className="drip d4" />
+                    <span className="drip d5" />
+                  </div>
+                  <div className="tier-decor">
+                    <span className="tier-monogram">Felisha · 14.10</span>
+                  </div>
+                  <div className="tier-pearls">
+                    <i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
+                  </div>
                 </div>
 
-                <div className="candlestick-base">
-                  <div className="base-rim" />
-                  <div className="base-stem" />
-                  <div className="base-foot" />
+                {/* Tier 1: Bottom Tier */}
+                <div className="cake-tier tier-bottom">
+                  <div className="cake-glaze-drip glaze-bottom">
+                    <span className="drip d1" />
+                    <span className="drip d2" />
+                    <span className="drip d3" />
+                    <span className="drip d4" />
+                    <span className="drip d5" />
+                    <span className="drip d6" />
+                    <span className="drip d7" />
+                  </div>
+                  <div className="gold-ribbon-belt">
+                    <span className="ribbon-sparkle">✨ WITH ALL MY LOVE ✨</span>
+                  </div>
+                  <div className="tier-pearls bottom">
+                    <i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
+                  </div>
+                </div>
+
+                {/* Luxury Gilded Cake Pedestal / Stand */}
+                <div className="cake-stand">
+                  <div className="cake-stand-platter">
+                    <div className="platter-edge-beading" />
+                  </div>
+                  <div className="cake-stand-stem" />
+                  <div className="cake-stand-base" />
                 </div>
               </div>
 
@@ -1175,7 +1256,7 @@ export default function Home() {
                     onClick={handleExtinguishCandle}
                   >
                     <i className="fa-solid fa-wind" />
-                    <span>Touch Flame to Blow Candle</span>
+                    <span>Touch Cake to Blow Candles</span>
                   </button>
                 </div>
               )}
@@ -1204,7 +1285,7 @@ export default function Home() {
                         onClick={handleReigniteCandle}
                       >
                         <i className="fa-solid fa-fire" />
-                        <span>Light the Candle Again</span>
+                        <span>Light the Candles Again</span>
                       </button>
                     </div>
                   </motion.div>
