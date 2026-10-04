@@ -1,7 +1,7 @@
 {
-  "name": "birthday",
+  "name": "ultah",
   "version": "1.0.0",
-  "description": "",
+  "description": "Luxury Birthday Web Tribute for Felisha Oktarina",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -10,16 +10,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1dleraden/birthday.git"
+    "url": "git+https://github.com/1dleraden/ultah.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/1dleraden/birthday/issues"
+    "url": "https://github.com/1dleraden/ultah/issues"
   },
-  "homepage": "https://github.com/1dleraden/birthday#readme",
+  "homepage": "https://github.com/1dleraden/ultah#readme",
   "dependencies": {
     "canvas-confetti": "^1.9.4",
     "motion": "^14.0.0",
