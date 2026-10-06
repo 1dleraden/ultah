@@ -1345,8 +1345,9 @@ section {
 
 .letter-header-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 0.75rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(223, 186, 115, 0.2);
   margin-bottom: 2.5rem;

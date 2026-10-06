@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 
 const PLAYLIST = [
   {
-    title: 'Aku Milikmu — Dewa 19',
+    title: 'Aku Milikmu (I Am Yours) — Dewa 19',
     src: encodeURI('/Aku Milikmu - Dewa 19 (Lyrics Video).mp3'),
   },
   {
@@ -13,7 +13,7 @@ const PLAYLIST = [
     src: encodeURI('/Daniel Caesar - Always (Lyrics).mp3'),
   },
   {
-    title: 'Kangen — Dewa 19',
+    title: 'Kangen (Longing for You) — Dewa 19',
     src: encodeURI('/Dewa 19 - Kangen (Official Audio).mp3'),
   },
 ];
@@ -53,24 +53,7 @@ const GALLERY_ITEMS = [
   },
 ];
 
-const DEFAULT_WISHES = [
-  {
-    id: 1,
-    author: 'Raden ❤️',
-    time: 'Oct 14, 2024',
-    message:
-      'Happy birthday to my favorite person in the world, Felisha! Thank you for coming into my life and completing it in such a breathtaking way. May you always be radiantly happy, healthy, and blessed, and may we celebrate every single birthday together. I love you so much!',
-    amens: 14,
-  },
-  {
-    id: 2,
-    author: 'Friends & Family',
-    time: 'Oct 14, 2024',
-    message:
-      'Happy Birthday beautiful Felisha! Wishing you a wonderful year ahead, full of good health, joy, and that all your sweetest dreams come true!',
-    amens: 9,
-  },
-];
+
 
 // Helper to trigger romantic gold & rose confetti
 const triggerRomanticSparks = (origin = { x: 0.5, y: 0.5 }) => {
@@ -126,11 +109,7 @@ export default function Home() {
   // Lightbox State
   const [lightbox, setLightbox] = useState({ isOpen: false, index: 0 });
 
-  // Wishboard State
-  const [wishes, setWishes] = useState(DEFAULT_WISHES);
-  const [wishAuthor, setWishAuthor] = useState('');
-  const [wishMessage, setWishMessage] = useState('');
-  const [userAmens, setUserAmens] = useState({});
+
 
   // Active Nav Section
   const [activeSection, setActiveSection] = useState('hero');
@@ -244,15 +223,7 @@ export default function Home() {
     };
   }, []);
 
-  // Load stored wishes on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('felisha_romantic_birthday_wishes_v1');
-      if (saved) {
-        setWishes(JSON.parse(saved));
-      }
-    } catch {}
-  }, []);
+
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -459,41 +430,7 @@ export default function Home() {
     setShowWishReveal(false);
   };
 
-  // Wishboard Submit
-  const handleWishSubmit = (e) => {
-    e.preventDefault();
-    if (!wishAuthor.trim() || !wishMessage.trim()) return;
 
-    const now = new Date();
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const timeStr = `${monthNames[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
-    const newWish = {
-      id: Date.now(),
-      author: wishAuthor.trim(),
-      time: timeStr,
-      message: wishMessage.trim(),
-      amens: 1,
-    };
-
-    const updated = [newWish, ...wishes];
-    setWishes(updated);
-    try {
-      localStorage.setItem('felisha_romantic_birthday_wishes_v1', JSON.stringify(updated));
-    } catch {}
-
-    triggerRomanticSparks({ x: 0.5, y: 0.7 });
-    setWishAuthor('');
-    setWishMessage('');
-  };
-
-  // Toggle Amen reaction
-  const handleAmen = (id) => {
-    if (userAmens[id]) return;
-    setUserAmens((prev) => ({ ...prev, [id]: true }));
-    setWishes((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, amens: (item.amens || 0) + 1 } : item))
-    );
-  };
 
   return (
     <>
@@ -605,10 +542,6 @@ export default function Home() {
             <span className="nav-sep">·</span>
             <a href="#reflections" className={`nav-link ${activeSection === 'reflections' ? 'active' : ''}`}>
               ABOUT YOU
-            </a>
-            <span className="nav-sep">·</span>
-            <a href="#wishes" className={`nav-link ${activeSection === 'wishes' ? 'active' : ''}`}>
-              WISHES
             </a>
           </div>
           <div className="nav-actions">
@@ -723,19 +656,6 @@ export default function Home() {
                   <div className="mobile-item-text">
                     <span className="mobile-item-title">Why I Love You</span>
                     <span className="mobile-item-sub">Three Little Things</span>
-                  </div>
-                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
-                </a>
-
-                <a
-                  href="#wishes"
-                  className={`mobile-nav-item ${activeSection === 'wishes' ? 'active' : ''}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span className="mobile-item-icon">✍️</span>
-                  <div className="mobile-item-text">
-                    <span className="mobile-item-title">Sweet Wishes</span>
-                    <span className="mobile-item-sub">Guestbook & Blessings</span>
                   </div>
                   <i className="fa-solid fa-chevron-right mobile-item-arrow" />
                 </a>
@@ -1039,44 +959,36 @@ export default function Home() {
 
                         {/* Letter Header */}
                         <div className="letter-header-row">
-                          <span className="letter-date-loc">Bogor, October 14, 2024</span>
                           <span className="letter-center-rose">🌹</span>
                           <span className="letter-heart-tag">From the Depths of My Heart</span>
                         </div>
 
                         {/* Salutation */}
                         <h3 className="letter-salutation">
-                          To Felisha, My Most Precious Person,
+                          To Felisha,
                         </h3>
 
                         {/* Heartfelt Body Text */}
                         <div className="letter-body-content">
                           <p className="letter-paragraph opening">
-                            Happy birthday, my beloved angel.
+                            Happy birthday, Felisha Oktarina Kustantri. Aku harap di umur kamu yang sekarang, kamu menemukan hal-hal baik ya, dan semoga kamu mencapai apa yang kamu ingin.
                           </p>
 
                           <p className="letter-paragraph">
-                            I might not always be the best at stringing together poetic words every single day. But on this extraordinary day of yours, I want you to know from the absolute depths of my heart: I am so profoundly grateful, truly blessed that God destined me to meet, know, and love someone as wonderful as you.
+                            Aku cuma mau bilang makasih ke kamu karna kamu udah datang ke hidup aku. Makasih juga udah buat aku ngerasa bahagia selama sebulan ini. Aku nggak nyangka bakal diterima sama kamu, walau akhirnya putus juga.
                           </p>
 
                           <p className="letter-paragraph">
-                            Thank you, my love... Thank you for being born into this world. Thank you for your sweet, contagious laughter, the gentle way you smile that always quiets the storms in my mind, and the pure warmth of your heart that makes me fall in love with you over and over again. With you, even ordinary days become something magical. With you, I found the home my heart always longs to return to.
+                            <em>I&apos;m so sorry</em> ya, aku kemarin udah bilang hal-hal yang nggak enak ke kamu pas kita putus. Soalnya aku sempat <em>shock</em> pas kamu bilang <em>flat</em>, pas itu aku juga lagi main, jadi gatau aku mau gimana. Aku udah bingung banget pas diputusin kamu, soalnya selama aku pacaran cuma kamu yang sampai kenal adik-adik aku. Ini juga versi terbaik aku yang nggak pernah aku kasih ke yang lain, jadi ya aku agak gimana gitu, mikir kalau di akunya ada yang kurang.
                           </p>
 
                           <p className="letter-paragraph">
-                            As you turn a year older today, my wish for you is pure and everlasting: May you always be healthy, radiantly happy, and cradled in safety wherever life takes you. May every dream and hope you have whispered slowly come to life, one by one. Never feel alone, my darling... Because I will always be right here by your side, holding your hand, protecting you, and cheering for you at every single step.
+                            <em>Once again, I&apos;m really sorry</em> kalau aku kemarin kesannya kayak nggak terima kalau diputusin, padahal aku tau kamu udah hilang rasa, tapi akunya masih maksa.
                           </p>
 
                           <p className="letter-paragraph closing">
-                            Happy birthday, love of my life. I love you more than words could ever explain.
+                            <em>Maybe</em> untuk sekarang aku belum bisa lupain kamu... tapi suatu saat aku pasti bakal bisa lupain n lepasin kamu kok. Untuk sekarang biarin aku <em>stalk</em> kamu terus ya, ada saatnya aku berhenti <em>stalking</em> kamu, dan memulai kembali kehidupan aku seperti semula.
                           </p>
-                        </div>
-
-                        {/* Sign-off Block */}
-                        <div className="letter-closing-block">
-                          <p className="closing-phrase">Written with all my love and warmest hugs,</p>
-                          <div className="closing-signature">Raden ❤️</div>
-                          <span className="closing-title">Forever Yours</span>
                         </div>
 
                         {/* Single Clean Refold Button */}
@@ -1359,106 +1271,6 @@ export default function Home() {
                   <p className="reflection-body">{item.body}</p>
                 </motion.div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═════════════════════════════════════════════════════════════════
-             SECTION VI: LOVE NOTES & WISHES (GUESTBOOK)
-        ══════════════════════════════════════════════════════════════════ */}
-        <section className="section-wishes" id="wishes">
-          <div className="content-wrapper narrow">
-            <motion.header
-              className="section-header"
-              initial={{ opacity: 0, y: 35, filter: 'blur(5px)' }}
-              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <span className="chapter-number">LOVE NOTES & WISHES</span>
-              <h2 className="section-heading gold-gradient-text">Leave a Sweet Wish & Blessing</h2>
-              <div className="regal-divider mini">
-                <span className="divider-line" />
-                <span className="divider-crest">💌</span>
-                <span className="divider-line" />
-              </div>
-              <p className="section-desc">
-                Write your heartfelt message, love note, or birthday wish for our sweet Felisha.
-              </p>
-            </motion.header>
-
-            <motion.div
-              className="wish-form-wrapper"
-              initial={{ opacity: 0, y: 35, filter: 'blur(5px)' }}
-              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <form onSubmit={handleWishSubmit} className="wish-form">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="wish-author">Your Name</label>
-                    <input
-                      type="text"
-                      id="wish-author"
-                      value={wishAuthor}
-                      onChange={(e) => setWishAuthor(e.target.value)}
-                      placeholder="e.g., Raden / Best Friend"
-                      required
-                      maxLength={50}
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="wish-message">Your Sincere Message & Wish</label>
-                  <textarea
-                    id="wish-message"
-                    rows={3}
-                    value={wishMessage}
-                    onChange={(e) => setWishMessage(e.target.value)}
-                    placeholder="Write your sweetest birthday wishes and blessings for Felisha..."
-                    required
-                    maxLength={350}
-                  />
-                </div>
-                <button type="submit" className="btn-royal-primary">
-                  <i className="fa-solid fa-heart" style={{ color: '#e63946' }} />
-                  <span>Send Love Note</span>
-                </button>
-              </form>
-            </motion.div>
-
-            {/* Wishes Feed with AnimatePresence */}
-            <div className="wishes-feed">
-              <AnimatePresence>
-                {wishes.map((item) => (
-                  <motion.div
-                    key={item.id}
-                    className="wish-card-item"
-                    initial={{ opacity: 0, y: 30, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <div className="wish-card-header">
-                      <span className="wish-card-author">{item.author}</span>
-                      <span className="wish-card-time">{item.time}</span>
-                    </div>
-                    <p className="wish-card-msg">{item.message}</p>
-                    <div className="wish-card-footer">
-                      <button
-                        type="button"
-                        className={`btn-wish-amen ${userAmens[item.id] ? 'is-active' : ''}`}
-                        onClick={() => handleAmen(item.id)}
-                        title="Amen / Love"
-                      >
-                        <i className="fa-solid fa-heart" style={{ color: userAmens[item.id] ? '#e63946' : 'inherit' }} />
-                        <span>Amen ({item.amens || 1})</span>
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
             </div>
           </div>
         </section>
