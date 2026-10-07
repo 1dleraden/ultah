@@ -805,8 +805,8 @@ export default function Home() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="chapter-number">OUR SWEET MOMENTS</span>
-              <h2 className="section-heading gold-gradient-text">Precious Memories with You</h2>
+              <span className="chapter-number">MOMEN-MOMEN MANIS KITA</span>
+              <h2 className="section-heading gold-gradient-text">Kenangan yg Tidak Akan Bisa Terulang Lagi</h2>
               <div className="regal-divider mini">
                 <span className="divider-line" />
                 <span className="divider-crest">🌹</span>
