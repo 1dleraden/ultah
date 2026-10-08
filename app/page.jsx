@@ -26,6 +26,8 @@ const GALLERY_ITEMS = [
     title: 'The Smile That Stole My Heart',
     excerpt: '"If there is one thing in this world I never get tired of looking at, it is your smile. Simple, gentle, yet it always melts my heart in a heartbeat."',
     caption: 'Your sweet smile that always has its own way of brightening my day and making me fall in love all over again.',
+    secretNote: 'Foto ini selalu jadi salah satu favoritku. Waktu itu kamu senyum lepas banget, dan di saat itu juga aku sadar kalau senyummu punya kekuatan luar biasa buat bikin tenang segala isi kepalaku.',
+    date: 'A Beautiful Sunny Day',
   },
   {
     src: '/moment2.jpeg',
@@ -34,6 +36,8 @@ const GALLERY_ITEMS = [
     title: 'Lost in Our Laughter & Stories',
     excerpt: '"Moments where time seems to stand still whenever we are together. No matter how exhausting the world gets, talking to you is always my favorite cure."',
     caption: 'Every second of our late-night talks, effortless laughter, and shared moments that I cherish every single day.',
+    secretNote: 'Momen kita ngobrol berjam-jam tanpa kerasa. Apapun topik pembicaraan kita, rasanya waktu selalu jalan terlalu cepat kalau lagi sama kamu.',
+    date: 'Late Night Conversations',
   },
   {
     src: '/momnt3.jpeg',
@@ -42,6 +46,8 @@ const GALLERY_ITEMS = [
     title: 'The Journey We Walk Together',
     excerpt: '"Thank you for always being by my side, walking gently with me without ever rushing. Holding your hand is the safest feeling in the universe."',
     caption: 'Walking side by side with you, embracing each new day with boundless gratitude in my heart.',
+    secretNote: 'Setiap langkah yang pernah kita laluin bareng. Walau sekarang kita melangkah di jalan masing-masing, terima kasih sudah pernah mengisi perjalananku dengan cerita yang begitu indah.',
+    date: 'Footsteps Side by Side',
   },
   {
     src: '/moment4.jpeg',
@@ -50,6 +56,8 @@ const GALLERY_ITEMS = [
     title: 'Where My Heart Calls Home',
     excerpt: '"In whatever corner of the earth I wander, my heart will always find its way back to you. You are the warmest home I have ever known."',
     caption: 'A tender promise to always cherish, protect, and stand beside you forever and always.',
+    secretNote: 'Doa tulus dari sudut terdalam hatiku untuk kebahagiaanmu. Ke mana pun takdir membawamu, aku akan selalu bangga dan mendoakan hal-hal terbaik buatmu, Fel.',
+    date: 'Forever in My Prayers',
   },
 ];
 
@@ -73,6 +81,8 @@ const triggerRomanticSparks = (origin = { x: 0.5, y: 0.5 }) => {
     });
   });
 };
+
+
 
 export default function Home() {
   // Scroll Progress
@@ -108,6 +118,28 @@ export default function Home() {
 
   // Lightbox State
   const [lightbox, setLightbox] = useState({ isOpen: false, index: 0 });
+
+  // 3D Flip Card state for Gallery
+  const [flippedCardIdx, setFlippedCardIdx] = useState(null);
+
+
+
+  // Real-time Birthday Countdown (Target: October 14)
+  const [birthdayCountdown, setBirthdayCountdown] = useState({
+    isBirthdayToday: false,
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  // Real Microphone Blow Detection for Birthday Cake
+  const [isListeningMic, setIsListeningMic] = useState(false);
+  const [micVolume, setMicVolume] = useState(0);
+  const [micStatusText, setMicStatusText] = useState('');
+  const micStreamRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const micAnimFrameRef = useRef(null);
 
 
 
@@ -430,6 +462,135 @@ export default function Home() {
     setShowWishReveal(false);
   };
 
+  // Birthday Countdown Effect (Target: October 14)
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const isToday = now.getMonth() === 9 && now.getDate() === 14;
+
+      if (isToday) {
+        setBirthdayCountdown({ isBirthdayToday: true, days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const targetDate = new Date(currentYear, 9, 14, 0, 0, 0);
+      let diff = targetDate.getTime() - now.getTime();
+      if (diff < 0) {
+        const nextYearTarget = new Date(currentYear + 1, 9, 14, 0, 0, 0);
+        diff = nextYearTarget.getTime() - now.getTime();
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setBirthdayCountdown({ isBirthdayToday: false, days, hours, minutes, seconds });
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Stop Microphone Helper
+  const stopMicDetection = () => {
+    if (micAnimFrameRef.current) cancelAnimationFrame(micAnimFrameRef.current);
+    if (micStreamRef.current) {
+      micStreamRef.current.getTracks().forEach((track) => track.stop());
+      micStreamRef.current = null;
+    }
+    if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+      audioCtxRef.current.close().catch(() => {});
+      audioCtxRef.current = null;
+    }
+    setIsListeningMic(false);
+    setMicVolume(0);
+  };
+
+  // Toggle Real Microphone Blow Detection
+  const toggleMicBlowDetection = async () => {
+    if (isListeningMic) {
+      stopMicDetection();
+      setMicStatusText('');
+      return;
+    }
+
+    if (isExtinguished) return;
+
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setMicStatusText('Perangkat belum mendukung akses mic. Sentuh kue langsung untuk meniup lilin!');
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      micStreamRef.current = stream;
+
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const audioCtx = new AudioContextClass();
+      audioCtxRef.current = audioCtx;
+
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.25;
+      source.connect(analyser);
+
+      setIsListeningMic(true);
+      setMicStatusText('🎙️ Mic aktif! Dekatkan mulut ke mic HP/laptop lalu TIUP...');
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      let blowCounter = 0;
+
+      const checkBlow = () => {
+        if (!micStreamRef.current) return;
+        analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        let lowSum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
+          if (i < 24) lowSum += dataArray[i];
+        }
+        const avg = sum / dataArray.length;
+        const lowAvg = lowSum / 24;
+        const vol = Math.min(100, Math.round((avg / 128) * 100));
+        setMicVolume(vol);
+
+        if (lowAvg > 46 || avg > 42) {
+          blowCounter++;
+        } else {
+          blowCounter = Math.max(0, blowCounter - 1);
+        }
+
+        if (blowCounter >= 3) {
+          setMicStatusText('✨ Tiupanmu terdeteksi! Lilin telah padam!');
+          stopMicDetection();
+          handleExtinguishCandle(null);
+          return;
+        }
+
+        micAnimFrameRef.current = requestAnimationFrame(checkBlow);
+      };
+
+      checkBlow();
+    } catch (err) {
+      console.warn('Microphone error:', err);
+      setMicStatusText('Izin mic tidak diberikan. Kamu tetap bisa menyentuh kue langsung!');
+      setIsListeningMic(false);
+    }
+  };
+
+  // Clean up microphone detection when extinguished or unmounting
+  useEffect(() => {
+    if (isExtinguished) {
+      stopMicDetection();
+    }
+    return () => stopMicDetection();
+  }, [isExtinguished]);
+
 
 
   return (
@@ -468,6 +629,30 @@ export default function Home() {
             <span className="preloader-tag">A SPECIAL BIRTHDAY TRIBUTE</span>
             <h1 className="preloader-title">Felisha Oktarina</h1>
             <p className="preloader-date">14 · OCTOBER · OUR SPECIAL DAY</p>
+
+            {!birthdayCountdown.isBirthdayToday && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.35rem 0.95rem',
+                  borderRadius: '999px',
+                  background: 'rgba(200, 146, 17, 0.1)',
+                  border: '1px solid rgba(200, 146, 17, 0.35)',
+                  fontSize: '0.78rem',
+                  color: 'var(--gold-deep)',
+                  margin: '0.5rem 0 1.1rem 0',
+                  fontWeight: 600,
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <span>⏳ Menuju Hari-H:</span>
+                <span style={{ fontFamily: 'var(--font-sans)', letterSpacing: '0.04em', color: 'var(--text-white)', fontWeight: 700 }}>
+                  {String(birthdayCountdown.days).padStart(2, '0')}h : {String(birthdayCountdown.hours).padStart(2, '0')}j : {String(birthdayCountdown.minutes).padStart(2, '0')}m : {String(birthdayCountdown.seconds).padStart(2, '0')}d
+                </span>
+              </div>
+            )}
 
             {/* Hairline Progress Track */}
             <div className="preloader-progress-track">
@@ -530,10 +715,6 @@ export default function Home() {
               className={`nav-link ${activeSection === 'gallery' ? 'active' : ''}`}
             >
               MEMORIES
-            </a>
-            <span className="nav-sep">·</span>
-            <a href="#letter" className={`nav-link ${activeSection === 'letter' ? 'active' : ''}`}>
-              LOVE LETTER
             </a>
             <span className="nav-sep">·</span>
             <a href="#candle" className={`nav-link ${activeSection === 'candle' ? 'active' : ''}`}>
@@ -618,21 +799,7 @@ export default function Home() {
                   <i className="fa-solid fa-chevron-right mobile-item-arrow" />
                 </a>
 
-                <a
-                  href="#letter"
-                  className={`mobile-nav-item ${activeSection === 'letter' ? 'active' : ''}`}
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    setIsEnvelopeOpen(true);
-                  }}
-                >
-                  <span className="mobile-item-icon">💌</span>
-                  <div className="mobile-item-text">
-                    <span className="mobile-item-title">Love Letter</span>
-                    <span className="mobile-item-sub">From the Heart of Raden</span>
-                  </div>
-                  <i className="fa-solid fa-chevron-right mobile-item-arrow" />
-                </a>
+
 
                 <a
                   href="#candle"
@@ -729,8 +896,57 @@ export default function Home() {
                 <span>TODAY IS ALL ABOUT YOU · OCTOBER 14</span>
               </div>
 
+              {/* ─── GRAND LUXURY BIRTHDAY COUNTDOWN ─── */}
+              <div className="luxury-countdown-card">
+                <div className="countdown-card-header">
+                  <span className="countdown-pulse-dot" />
+                  <span className="countdown-card-title">
+                    {birthdayCountdown.isBirthdayToday
+                      ? '🎉 HARI INI HARI ULANG TAHUNMU!'
+                      : 'COUNTDOWN TO OCTOBER 14 · HARI SPESIAL FELISHA'}
+                  </span>
+                </div>
+
+                {birthdayCountdown.isBirthdayToday ? (
+                  <div className="birthday-today-celebration">
+                    <h3 className="gold-gradient-text">HAPPY BIRTHDAY, FELISHA OKTARINA! 🌹🎂</h3>
+                    <p>Semoga semua doa, harapan, dan kebahagiaan menyertaimu hari ini dan selamanya.</p>
+                  </div>
+                ) : (
+                  <div className="countdown-digits-grid">
+                    <div className="digit-box">
+                      <span className="digit-num gold-gradient-text">
+                        {String(birthdayCountdown.days).padStart(2, '0')}
+                      </span>
+                      <span className="digit-label">HARI</span>
+                    </div>
+                    <span className="digit-colon">:</span>
+                    <div className="digit-box">
+                      <span className="digit-num gold-gradient-text">
+                        {String(birthdayCountdown.hours).padStart(2, '0')}
+                      </span>
+                      <span className="digit-label">JAM</span>
+                    </div>
+                    <span className="digit-colon">:</span>
+                    <div className="digit-box">
+                      <span className="digit-num gold-gradient-text">
+                        {String(birthdayCountdown.minutes).padStart(2, '0')}
+                      </span>
+                      <span className="digit-label">MENIT</span>
+                    </div>
+                    <span className="digit-colon">:</span>
+                    <div className="digit-box digit-box-seconds">
+                      <span className="digit-num gold-gradient-text">
+                        {String(birthdayCountdown.seconds).padStart(2, '0')}
+                      </span>
+                      <span className="digit-label">DETIK</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <h1 className="hero-title">
-                <span className="hero-title-prefix">Happy Birthday, My Angel,</span>
+                <span className="hero-title-prefix">Happy Birthday,</span>
                 <span className="hero-title-name gold-gradient-text">Felisha Oktarina.</span>
               </h1>
 
@@ -745,11 +961,7 @@ export default function Home() {
               </div>
 
               <div className="hero-actions">
-                <a href="#letter" onClick={handleHeroLetterClick} className="btn-royal-primary">
-                  <i className="fa-solid fa-envelope-open-text" />
-                  <span>Open Your Love Letter</span>
-                </a>
-                <a href="#candle" className="btn-royal-secondary">
+                <a href="#candle" className="btn-royal-primary">
                   <i className="fa-solid fa-cake-candles" />
                   <span>Blow Birthday Candle</span>
                 </a>
@@ -817,38 +1029,88 @@ export default function Home() {
               </p>
             </motion.header>
 
-            {/* Staggered Gallery Grid */}
+            {/* Staggered Gallery Grid with 3D Flip */}
             <div className="gallery-grid">
-              {GALLERY_ITEMS.map((item, idx) => (
-                <motion.article
-                  key={idx}
-                  className="gallery-card"
-                  initial={{ opacity: 0, y: 45, filter: 'blur(4px)' }}
-                  whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  viewport={{ once: true, amount: 0.15 }}
-                  transition={{
-                    duration: 0.85,
-                    delay: idx * 0.14,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  whileHover={{ y: -6 }}
-                  onClick={() => setLightbox({ isOpen: true, index: idx })}
-                >
-                  <div className="card-frame-inner">
-                    <div className="card-media">
-                      <img src={item.src} alt={item.title} loading="lazy" />
+              {GALLERY_ITEMS.map((item, idx) => {
+                const isFlipped = flippedCardIdx === idx;
+                return (
+                  <motion.article
+                    key={idx}
+                    className="gallery-card gallery-flip-container"
+                    initial={{ opacity: 0, y: 45, filter: 'blur(4px)' }}
+                    whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    viewport={{ once: true, amount: 0.15 }}
+                    transition={{
+                      duration: 0.85,
+                      delay: idx * 0.14,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    whileHover={{ y: isFlipped ? 0 : -6 }}
+                  >
+                    <div className={`gallery-flip-box ${isFlipped ? 'is-flipped' : ''}`}>
+                      {/* FRONT: Photo & Excerpt */}
+                      <div className="gallery-flip-front">
+                        <div className="card-frame-inner">
+                          <div
+                            className="card-media"
+                            onClick={() => setLightbox({ isOpen: true, index: idx })}
+                            role="button"
+                            tabIndex={0}
+                            title="Klik untuk perbesar foto"
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={item.src} alt={item.title} loading="lazy" />
+                          </div>
+                          <div className="card-info">
+                            <span className="card-meta">{item.meta}</span>
+                            <h3 className="card-title">{item.title}</h3>
+                            <p className="card-excerpt">{item.excerpt}</p>
+                            <button
+                              type="button"
+                              className="btn-flip-card"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFlippedCardIdx(isFlipped ? null : idx);
+                              }}
+                            >
+                              <i className="fa-solid fa-envelope-open-text" />
+                              <span>Baca Catatan Rahasia di Balik Foto</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* BACK: Vintage Postal Card & Secret Thought */}
+                      <div className="gallery-flip-back">
+                        <div className="card-back-header">
+                          <span className="card-back-tag">🌹 DEAR FELISHA</span>
+                          <span className="card-back-stamp">{item.plate}</span>
+                        </div>
+                        <div className="card-back-content">
+                          <span className="card-back-date">📍 {item.date}</span>
+                          <p className="card-back-note">"{item.secretNote}"</p>
+                        </div>
+                        <button
+                          type="button"
+                          className="btn-flip-card"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFlippedCardIdx(null);
+                          }}
+                        >
+                          <i className="fa-solid fa-camera-retro" />
+                          <span>Kembali ke Tampilan Foto</span>
+                        </button>
+                      </div>
                     </div>
-                    <div className="card-info">
-                      <span className="card-meta">{item.meta}</span>
-                      <h3 className="card-title">{item.title}</h3>
-                      <p className="card-excerpt">{item.excerpt}</p>
-                    </div>
-                  </div>
-                </motion.article>
-              ))}
+                  </motion.article>
+                );
+              })}
             </div>
           </div>
         </section>
+
+
 
         {/* ═════════════════════════════════════════════════════════════════
              SECTION III: LOVE LETTER FOR FELISHA (HEARTFELT ROMANCE)
@@ -1162,14 +1424,46 @@ export default function Home() {
 
               {!isExtinguished && (
                 <div className="candle-prompt">
-                  <button
-                    type="button"
-                    className="btn-royal-primary"
-                    onClick={handleExtinguishCandle}
-                  >
-                    <i className="fa-solid fa-wind" />
-                    <span>Touch Cake to Blow Candles</span>
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      className="btn-royal-primary"
+                      onClick={handleExtinguishCandle}
+                    >
+                      <i className="fa-solid fa-wind" />
+                      <span>Sentuh Kue untuk Tiup Lilin</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`btn-mic-toggle ${isListeningMic ? 'is-listening' : ''}`}
+                      onClick={toggleMicBlowDetection}
+                      title="Tiup langsung ke lubang mikrofon perangkat"
+                    >
+                      <i className={`fa-solid ${isListeningMic ? 'fa-microphone-lines' : 'fa-microphone'}`} />
+                      <span>{isListeningMic ? 'Matikan Sensor Mic' : '🎤 Tiup Pakai Mikrofon HP/Laptop'}</span>
+                    </button>
+                  </div>
+
+                  {isListeningMic && (
+                    <div className="mic-blow-panel">
+                      <div className="mic-visualizer-wrap">
+                        <div
+                          className="mic-visualizer-bar"
+                          style={{ width: `${Math.max(5, micVolume)}%` }}
+                        />
+                      </div>
+                      <p className="mic-status-text">
+                        {micStatusText || '🎙️ Dekatkan bibir ke mic lalu hembuskan nafas/tiup sekuatnya...'}
+                      </p>
+                    </div>
+                  )}
+
+                  {!isListeningMic && micStatusText && (
+                    <p className="mic-status-text" style={{ marginTop: '0.5rem' }}>
+                      {micStatusText}
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -1320,7 +1614,9 @@ export default function Home() {
               <i className="fa-solid fa-compact-disc" />
             </div>
             <div className="dock-mini-info">
-              <span className="dock-mini-title">{PLAYLIST[currentTrackIndex].title}</span>
+              <span className="dock-mini-title" title={PLAYLIST[currentTrackIndex].title}>
+                {PLAYLIST[currentTrackIndex].title}
+              </span>
               <span className="dock-mini-status">
                 {isPlaying ? (
                   <span className="sound-bars mini" aria-hidden="true">
@@ -1341,7 +1637,10 @@ export default function Home() {
 
             <div className="dock-track-info">
               <div className="dock-track-header">
-                <span className="track-label">OUR SONG</span>
+                <span className="track-label">
+                  <i className="fa-solid fa-music" />
+                  LAGU KITA
+                </span>
                 <button
                   type="button"
                   className="dock-minimize-btn"
@@ -1352,7 +1651,9 @@ export default function Home() {
                   <i className="fa-solid fa-chevron-down" />
                 </button>
               </div>
-              <span className="track-title">{PLAYLIST[currentTrackIndex].title}</span>
+              <span className="track-title" title={PLAYLIST[currentTrackIndex].title}>
+                {PLAYLIST[currentTrackIndex].title}
+              </span>
               <div className="track-scrubber-row">
                 <span className="track-time">{formatTime(currentTime)}</span>
                 <input
