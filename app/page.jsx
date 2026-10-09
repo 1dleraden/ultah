@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
+import InfiniteSpiral from '../components/InfiniteSpiral';
 
 const PLAYLIST = [
   {
@@ -15,6 +16,10 @@ const PLAYLIST = [
   {
     title: 'Kangen (Longing for You) — Dewa 19',
     src: encodeURI('/Dewa 19 - Kangen (Official Audio).mp3'),
+  },
+  {
+    title: 'Panasea — rumahsakit',
+    src: encodeURI('/rumahsakit - Panasea (Official Music Video).mp3'),
   },
 ];
 
@@ -61,6 +66,17 @@ const GALLERY_ITEMS = [
   },
 ];
 
+const SPIRAL_ITEMS = [
+  { src: '/fel.jpeg', alt: 'Felisha Oktarina', label: 'Felisha · 14.10' },
+  { src: '/momnt1.jpeg', alt: 'The Smile That Stole My Heart', label: 'Sweet Smile' },
+  { src: '/moment2.jpeg', alt: 'Lost in Our Laughter & Stories', label: 'Our Laughter' },
+  { src: '/momnt3.jpeg', alt: 'The Journey We Walk Together', label: 'Walking Together' },
+  { src: '/moment4.jpeg', alt: 'Where My Heart Calls Home', label: 'Warm Home' },
+  { src: '/fel.jpeg', alt: 'My Favorite Person', label: 'With All My Heart' },
+  { src: '/momnt1.jpeg', alt: 'Precious Moments', label: 'Serenity' },
+  { src: '/moment2.jpeg', alt: 'Late Night Talks', label: 'Endless Stories' },
+];
+
 
 
 // Helper to trigger romantic gold & rose confetti
@@ -78,6 +94,200 @@ const triggerRomanticSparks = (origin = { x: 0.5, y: 0.5 }) => {
       scalar: 0.95,
       shapes: ['circle', 'square'],
       disableForReducedMotion: true,
+    });
+  });
+};
+
+// Realistic Synthesized Party Popper POP sound using Web Audio API
+const playPopperSound = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+
+    const now = ctx.currentTime;
+
+    // 1. Bass "thump" of the popper blast chamber
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(280, now);
+    osc.frequency.exponentialRampToValueAtTime(38, now + 0.11);
+    oscGain.gain.setValueAtTime(0.5, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+
+    // 2. High snappy "crack/pop" of the party popper cap
+    const bufferSize = Math.floor(ctx.sampleRate * 0.14);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.024));
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.setValueAtTime(1600, now);
+    noiseFilter.Q.setValueAtTime(1.1, now);
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.48, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.14);
+  } catch {
+    // Non-blocking fallback
+  }
+};
+
+// Grand Multi-Stage Party Popper Celebration Cannon
+const triggerGrandPartyPopperCelebration = (customOriginX = null, customOriginY = null) => {
+  if (typeof window === 'undefined') return;
+  playPopperSound();
+  import('canvas-confetti').then((module) => {
+    const confetti = module.default;
+    const celebrationColors = [
+      '#e63946', '#ff4d6d', '#ff758f', '#fa5252', // Radiant Ruby & Rose
+      '#dfba73', '#f5c518', '#ffd166', '#fae8ba', // 24K Gold & Champagne
+      '#7209b7', '#9d4edd', '#c77dff', // Royal Violet & Purple
+      '#4cc9f0', '#06d6a0', '#2ec4b6', // Festive Turquoise & Emerald
+      '#ffffff',
+    ];
+
+    // Stage 1: Dual Bottom Cannons (Party Poppers 🎉 Firing from Left & Right Corners)
+    confetti({
+      particleCount: 85,
+      angle: 60,
+      spread: 75,
+      origin: { x: 0.04, y: 0.92 },
+      colors: celebrationColors,
+      startVelocity: 65,
+      gravity: 0.72,
+      scalar: 1.15,
+      shapes: ['star', 'circle', 'square'],
+      ticks: 320,
+      disableForReducedMotion: true,
+    });
+
+    confetti({
+      particleCount: 85,
+      angle: 120,
+      spread: 75,
+      origin: { x: 0.96, y: 0.92 },
+      colors: celebrationColors,
+      startVelocity: 65,
+      gravity: 0.72,
+      scalar: 1.15,
+      shapes: ['star', 'circle', 'square'],
+      ticks: 320,
+      disableForReducedMotion: true,
+    });
+
+    // If custom origin specified (e.g., clicked element on screen)
+    if (customOriginX !== null && customOriginY !== null) {
+      confetti({
+        particleCount: 70,
+        spread: 90,
+        origin: { x: customOriginX, y: customOriginY },
+        colors: celebrationColors,
+        startVelocity: 48,
+        gravity: 0.8,
+        scalar: 1.2,
+        shapes: ['star', 'circle', 'square'],
+        ticks: 280,
+      });
+    }
+
+    // Stage 2 (+280ms): High-volume center fireworks burst
+    setTimeout(() => {
+      confetti({
+        particleCount: 110,
+        spread: 120,
+        origin: { x: 0.5, y: 0.6 },
+        colors: celebrationColors,
+        startVelocity: 52,
+        gravity: 0.75,
+        scalar: 1.25,
+        shapes: ['star', 'circle'],
+        ticks: 340,
+      });
+    }, 280);
+
+    // Stage 3 (+650ms): Cross-fire streamers criss-crossing screen
+    setTimeout(() => {
+      confetti({
+        particleCount: 65,
+        angle: 45,
+        spread: 60,
+        origin: { x: 0.12, y: 0.8 },
+        colors: celebrationColors,
+        startVelocity: 58,
+        gravity: 0.78,
+      });
+      confetti({
+        particleCount: 65,
+        angle: 135,
+        spread: 60,
+        origin: { x: 0.88, y: 0.8 },
+        colors: celebrationColors,
+        startVelocity: 58,
+        gravity: 0.78,
+      });
+    }, 650);
+
+    // Stage 4 (+1100ms): Golden Stars & Hearts cascading from the ceiling
+    setTimeout(() => {
+      confetti({
+        particleCount: 65,
+        spread: 140,
+        origin: { x: 0.5, y: 0.22 },
+        colors: ['#dfba73', '#f5c518', '#fae8ba', '#ffd166', '#ff4d6d', '#ffffff'],
+        startVelocity: 35,
+        gravity: 0.55,
+        scalar: 1.3,
+        shapes: ['star'],
+        ticks: 300,
+      });
+    }, 1100);
+  });
+};
+
+// Directional Single Party Popper Blast (for interactive corner popper cannons)
+const triggerCornerPopper = (side = 'left') => {
+  if (typeof window === 'undefined') return;
+  playPopperSound();
+  import('canvas-confetti').then((module) => {
+    const confetti = module.default;
+    const colors = [
+      '#e63946', '#ff4d6d', '#ff758f', '#fa5252',
+      '#dfba73', '#f5c518', '#ffd166',
+      '#7209b7', '#4cc9f0', '#06d6a0', '#ffffff',
+    ];
+    const isLeft = side === 'left';
+    confetti({
+      particleCount: 90,
+      angle: isLeft ? 55 : 125,
+      spread: 70,
+      origin: { x: isLeft ? 0.05 : 0.95, y: 0.88 },
+      colors,
+      startVelocity: 68,
+      gravity: 0.72,
+      scalar: 1.2,
+      shapes: ['star', 'circle', 'square'],
+      ticks: 320,
     });
   });
 };
@@ -122,6 +332,17 @@ export default function Home() {
   // 3D Flip Card state for Gallery
   const [flippedCardIdx, setFlippedCardIdx] = useState(null);
 
+  // Responsive Mobile Viewport Detection
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileScreen(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
 
 
   // Real-time Birthday Countdown (Target: October 14)
@@ -132,6 +353,20 @@ export default function Home() {
     minutes: 0,
     seconds: 0,
   });
+
+  // Preview Hari-H mode & one-time opening celebration trigger
+  const [isPreviewHariH, setIsPreviewHariH] = useState(false);
+  const hasCelebratedOnEnterRef = useRef(false);
+
+  // Check URL params for testing Hari-H preview (?harih=true or ?dday=true)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('harih') === 'true' || searchParams.get('dday') === 'true') {
+        setIsPreviewHariH(true);
+      }
+    }
+  }, []);
 
   // Real Microphone Blow Detection for Birthday Cake
   const [isListeningMic, setIsListeningMic] = useState(false);
@@ -173,10 +408,28 @@ export default function Home() {
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  // Enter Gala / Open Birthday Gift Handler
-  const handleEnterGala = () => {
+  // Enter Gala / Open Birthday Gift Handler ("Saat Memencet Masuk")
+  const handleEnterGala = (e) => {
     if (isPreloaderEntered) return;
-    triggerRomanticSparks({ x: 0.5, y: 0.5 });
+
+    let originX = 0.5;
+    let originY = 0.6;
+    if (e && e.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      originX = (rect.left + rect.width / 2) / window.innerWidth;
+      originY = (rect.top + rect.height / 2) / window.innerHeight;
+    }
+
+    // On Hari-H: Fire grand celebratory party poppers immediately when pressing masuk!
+    if (birthdayCountdown.isBirthdayToday) {
+      triggerGrandPartyPopperCelebration(originX, originY);
+      // Second grand celebratory wave as shutters fully open
+      setTimeout(() => {
+        triggerGrandPartyPopperCelebration();
+      }, 1000);
+    } else {
+      triggerRomanticSparks({ x: originX, y: originY });
+    }
 
     // Start music smoothly with Aku Milikmu
     if (audioRef.current) {
@@ -467,7 +720,8 @@ export default function Home() {
     const updateCountdown = () => {
       const now = new Date();
       const currentYear = now.getFullYear();
-      const isToday = now.getMonth() === 9 && now.getDate() === 14;
+      const isActualToday = now.getMonth() === 9 && now.getDate() === 14;
+      const isToday = isActualToday || isPreviewHariH;
 
       if (isToday) {
         setBirthdayCountdown({ isBirthdayToday: true, days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -492,7 +746,37 @@ export default function Home() {
     updateCountdown();
     const timer = setInterval(updateCountdown, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isPreviewHariH]);
+
+  // Automatic Party Popper blast when website opens directly on Hari-H
+  useEffect(() => {
+    if (birthdayCountdown.isBirthdayToday && isPreloaderEntered && !hasCelebratedOnEnterRef.current) {
+      hasCelebratedOnEnterRef.current = true;
+      triggerGrandPartyPopperCelebration();
+    }
+  }, [birthdayCountdown.isBirthdayToday, isPreloaderEntered]);
+
+  // Interactive Party Popper Handlers
+  const handleToggleHariHPreview = () => {
+    const nextVal = !isPreviewHariH;
+    setIsPreviewHariH(nextVal);
+    if (nextVal) {
+      setTimeout(() => {
+        triggerGrandPartyPopperCelebration();
+      }, 100);
+    }
+  };
+
+  const handleFirePartyPopper = (e) => {
+    if (e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const originX = (rect.left + rect.width / 2) / window.innerWidth;
+      const originY = (rect.top + rect.height / 2) / window.innerHeight;
+      triggerGrandPartyPopperCelebration(originX, originY);
+    } else {
+      triggerGrandPartyPopperCelebration();
+    }
+  };
 
   // Stop Microphone Helper
   const stopMicDetection = () => {
@@ -630,7 +914,7 @@ export default function Home() {
             <h1 className="preloader-title">Felisha Oktarina</h1>
             <p className="preloader-date">14 · OCTOBER · OUR SPECIAL DAY</p>
 
-            {!birthdayCountdown.isBirthdayToday && (
+            {!birthdayCountdown.isBirthdayToday ? (
               <div
                 style={{
                   display: 'inline-flex',
@@ -652,6 +936,12 @@ export default function Home() {
                   {String(birthdayCountdown.days).padStart(2, '0')}h : {String(birthdayCountdown.hours).padStart(2, '0')}j : {String(birthdayCountdown.minutes).padStart(2, '0')}m : {String(birthdayCountdown.seconds).padStart(2, '0')}d
                 </span>
               </div>
+            ) : (
+              <div className="preloader-harih-badge">
+                <span className="popper-emoji-bounce">🎉</span>
+                <span>HARI INI HARI-H ULANG TAHUN FELISHA!</span>
+                <span className="popper-emoji-bounce">🎉</span>
+              </div>
             )}
 
             {/* Hairline Progress Track */}
@@ -665,7 +955,11 @@ export default function Home() {
             {/* Progress Metadata & Romantic Status */}
             <div className="preloader-meta-row">
               <span className="preloader-status-text">
-                {loadProgress < 30
+                {birthdayCountdown.isBirthdayToday
+                  ? loadProgress < 100
+                    ? '🎉 Menyiapkan letupan kejutan ulang tahun Hari-H...'
+                    : '🎉 Hadiah Ulang Tahun Hari-H Siap Dibuka!'
+                  : loadProgress < 30
                   ? 'Remembering your first smile...'
                   : loadProgress < 65
                   ? 'Gathering our most precious memories...'
@@ -687,9 +981,19 @@ export default function Home() {
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 autoFocus
               >
-                <i className="fa-solid fa-gift" />
-                <span>Open Your Birthday Gift</span>
-                <i className="fa-solid fa-heart" style={{ color: '#e63946' }} />
+                {birthdayCountdown.isBirthdayToday ? (
+                  <>
+                    <span className="popper-emoji-bounce">🎉</span>
+                    <span>Masuk & Buka Hadiah Hari-H</span>
+                    <span className="popper-emoji-bounce">🎊</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="fa-solid fa-gift" />
+                    <span>Masuk & Buka Hadiah Ulang Tahun</span>
+                    <i className="fa-solid fa-heart" style={{ color: '#e63946' }} />
+                  </>
+                )}
               </motion.button>
             )}
           </div>
@@ -896,23 +1200,16 @@ export default function Home() {
                 <span>TODAY IS ALL ABOUT YOU · OCTOBER 14</span>
               </div>
 
-              {/* ─── GRAND LUXURY BIRTHDAY COUNTDOWN ─── */}
-              <div className="luxury-countdown-card">
-                <div className="countdown-card-header">
-                  <span className="countdown-pulse-dot" />
-                  <span className="countdown-card-title">
-                    {birthdayCountdown.isBirthdayToday
-                      ? '🎉 HARI INI HARI ULANG TAHUNMU!'
-                      : 'COUNTDOWN TO OCTOBER 14 · HARI SPESIAL FELISHA'}
-                  </span>
-                </div>
-
-                {birthdayCountdown.isBirthdayToday ? (
-                  <div className="birthday-today-celebration">
-                    <h3 className="gold-gradient-text">HAPPY BIRTHDAY, FELISHA OKTARINA! 🌹🎂</h3>
-                    <p>Semoga semua doa, harapan, dan kebahagiaan menyertaimu hari ini dan selamanya.</p>
+              {/* ─── GRAND LUXURY BIRTHDAY COUNTDOWN (HIDDEN ON HARI-H) ─── */}
+              {!birthdayCountdown.isBirthdayToday && (
+                <div className="luxury-countdown-card">
+                  <div className="countdown-card-header">
+                    <span className="countdown-pulse-dot" />
+                    <span className="countdown-card-title">
+                      COUNTDOWN TO OCTOBER 14 · HARI SPESIAL FELISHA
+                    </span>
                   </div>
-                ) : (
+
                   <div className="countdown-digits-grid">
                     <div className="digit-box">
                       <span className="digit-num gold-gradient-text">
@@ -942,8 +1239,8 @@ export default function Home() {
                       <span className="digit-label">DETIK</span>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               <h1 className="hero-title">
                 <span className="hero-title-prefix">Happy Birthday,</span>
@@ -1028,6 +1325,51 @@ export default function Home() {
                 Every single second spent with you is a cherished chapter I hold forever close to my heart.
               </p>
             </motion.header>
+
+            {/* ─── 3D INFINITE SPIRAL GALLERY (REACT BITS) ─── */}
+            <motion.div
+              className="spiral-showcase-container"
+              initial={{ opacity: 0, y: 35, filter: 'blur(4px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="spiral-showcase-header">
+                <span className="spiral-tag">
+                  <i className="fa-solid fa-cube" /> 3D INTERACTIVE HELIX · PUTAR & SCROLL
+                </span>
+                <h3 className="gold-gradient-text spiral-heading">
+                  Spiral 3D Memori Kita
+                </h3>
+                <p className="spiral-sub">
+                  Putaran memori indah bersama Felisha yang terjalin selamanya. Geser kursor atau scroll untuk berinteraksi dengan helix foto.
+                </p>
+              </div>
+
+              <div className="spiral-stage-wrapper">
+                <InfiniteSpiral
+                  items={SPIRAL_ITEMS}
+                  animationMode="all"
+                  speed={isMobileScreen ? 0.45 : 0.55}
+                  radius={isMobileScreen ? 128 : 180}
+                  cardWidth={isMobileScreen ? 90 : 125}
+                  cardHeight={isMobileScreen ? 90 : 125}
+                  verticalSpacing={isMobileScreen ? 48 : 65}
+                  perspective={isMobileScreen ? 850 : 1000}
+                  cardRadius={isMobileScreen ? 12 : 14}
+                  centerScale={isMobileScreen ? 1.2 : 1.25}
+                  edgeBlur={isMobileScreen ? 3 : 4}
+                  cardsPerTurn={isMobileScreen ? 6 : 7}
+                  pauseOnHover={true}
+                  imageFit="cover"
+                />
+              </div>
+
+              <div className="spiral-instruction-badge">
+                <i className="fa-solid fa-arrows-up-down" />
+                <span>Geser (drag) ke atas/bawah atau arahkan mouse untuk berinteraksi dengan foto</span>
+              </div>
+            </motion.div>
 
             {/* Staggered Gallery Grid with 3D Flip */}
             <div className="gallery-grid">
