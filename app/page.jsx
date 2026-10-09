@@ -67,14 +67,16 @@ const GALLERY_ITEMS = [
 ];
 
 const SPIRAL_ITEMS = [
-  { src: '/fel.jpeg', alt: 'Felisha Oktarina', label: 'Felisha · 14.10' },
-  { src: '/momnt1.jpeg', alt: 'The Smile That Stole My Heart', label: 'Sweet Smile' },
-  { src: '/moment2.jpeg', alt: 'Lost in Our Laughter & Stories', label: 'Our Laughter' },
-  { src: '/momnt3.jpeg', alt: 'The Journey We Walk Together', label: 'Walking Together' },
-  { src: '/moment4.jpeg', alt: 'Where My Heart Calls Home', label: 'Warm Home' },
-  { src: '/fel.jpeg', alt: 'My Favorite Person', label: 'With All My Heart' },
-  { src: '/momnt1.jpeg', alt: 'Precious Moments', label: 'Serenity' },
-  { src: '/moment2.jpeg', alt: 'Late Night Talks', label: 'Endless Stories' },
+  { id: 'sp-1', src: '/fel.jpeg', alt: 'Felisha Oktarina', label: 'Felisha · 14.10' },
+  { id: 'sp-2', src: '/momnt1.jpeg', alt: 'Senyum Termani', label: 'Sweet Smile' },
+  { id: 'sp-3', src: '/moment2.jpeg', alt: 'Cerita & Tawa Kita', label: 'Our Laughter' },
+  { id: 'sp-4', src: '/momnt3.jpeg', alt: 'Langkah Bersamamu', label: 'Walking Together' },
+  { id: 'sp-5', src: '/moment4.jpeg', alt: 'Rumah Hatiku', label: 'Warm Home' },
+  { id: 'sp-6', src: '/fel.jpeg', alt: 'Tatapan Favoritku', label: 'Favorite Person' },
+  { id: 'sp-7', src: '/momnt1.jpeg', alt: 'Kebahagiaan Murni', label: 'Pure Bliss' },
+  { id: 'sp-8', src: '/moment2.jpeg', alt: 'Obrolan Larut Malam', label: 'Late Talks' },
+  { id: 'sp-9', src: '/momnt3.jpeg', alt: 'Petualangan Berdua', label: 'Journey' },
+  { id: 'sp-10', src: '/moment4.jpeg', alt: 'Selamanya Untukmu', label: 'Forever Mine' },
 ];
 
 
@@ -334,6 +336,10 @@ export default function Home() {
 
   // Responsive Mobile Viewport Detection
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const [spiralMode, setSpiralMode] = useState('ring'); // 'ring' (pristine 3D carousel) or 'helix' (gentle 3D staircase)
+  const [isSpiralPaused, setIsSpiralPaused] = useState(false);
+  const spiralRef = useRef(null);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobileScreen(window.innerWidth < 640);
@@ -1336,42 +1342,113 @@ export default function Home() {
             >
               <div className="spiral-showcase-header">
                 <span className="spiral-tag">
-                  <i className="fa-solid fa-cube" /> 3D INTERACTIVE HELIX · PUTAR & SCROLL
+                  <i className="fa-solid fa-cube" /> GALERI 3D MEMORI FELISHA
                 </span>
                 <h3 className="gold-gradient-text spiral-heading">
-                  Spiral 3D Memori Kita
+                  {spiralMode === 'ring' ? 'Orbit Carousel 3D Felisha' : 'Spiral 3D Memori Kita'}
                 </h3>
                 <p className="spiral-sub">
-                  Putaran memori indah bersama Felisha yang terjalin selamanya. Geser kursor atau scroll untuk berinteraksi dengan helix foto.
+                  Koleksi potret terindah Felisha Oktarina yang berputar dalam dimensi 3D elegan.
                 </p>
+
+                {/* Mode Selector Tabs */}
+                <div className="spiral-mode-tabs">
+                  <button
+                    type="button"
+                    className={`spiral-tab-btn ${spiralMode === 'ring' ? 'active' : ''}`}
+                    onClick={() => setSpiralMode('ring')}
+                  >
+                    <i className="fa-solid fa-circle-notch" />
+                    <span>Carousel Melingkar (Rapi)</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`spiral-tab-btn ${spiralMode === 'helix' ? 'active' : ''}`}
+                    onClick={() => setSpiralMode('helix')}
+                  >
+                    <i className="fa-solid fa-dna" />
+                    <span>Spiral Tangga 3D</span>
+                  </button>
+                </div>
               </div>
 
               <div className="spiral-stage-wrapper">
                 <InfiniteSpiral
+                  ref={spiralRef}
                   items={SPIRAL_ITEMS}
-                  animationMode={isMobileScreen ? 'auto' : 'all'}
-                  speed={isMobileScreen ? 0.38 : 0.55}
-                  radius={isMobileScreen ? 88 : 180}
-                  cardWidth={isMobileScreen ? 74 : 125}
-                  cardHeight={isMobileScreen ? 74 : 125}
-                  verticalSpacing={isMobileScreen ? 40 : 65}
-                  perspective={isMobileScreen ? 720 : 1000}
-                  cardRadius={isMobileScreen ? 10 : 14}
-                  centerScale={isMobileScreen ? 1.12 : 1.25}
-                  edgeBlur={isMobileScreen ? 2 : 4}
-                  cardsPerTurn={isMobileScreen ? 5 : 7}
+                  animationMode="auto"
+                  speed={isMobileScreen ? 0.32 : 0.42}
+                  radius={
+                    spiralMode === 'ring'
+                      ? (isMobileScreen ? 112 : 190)
+                      : (isMobileScreen ? 94 : 170)
+                  }
+                  cardWidth={
+                    spiralMode === 'ring'
+                      ? (isMobileScreen ? 88 : 124)
+                      : (isMobileScreen ? 78 : 115)
+                  }
+                  cardHeight={
+                    spiralMode === 'ring'
+                      ? (isMobileScreen ? 88 : 124)
+                      : (isMobileScreen ? 78 : 115)
+                  }
+                  verticalSpacing={
+                    spiralMode === 'ring'
+                      ? 0
+                      : (isMobileScreen ? 24 : 44)
+                  }
+                  perspective={isMobileScreen ? 780 : 1000}
+                  cardRadius={isMobileScreen ? 12 : 14}
+                  centerScale={isMobileScreen ? 1.18 : 1.25}
+                  edgeBlur={0}
+                  edgeFade={0.35}
+                  cardsPerTurn={isMobileScreen ? 6 : 7}
                   pauseOnHover={true}
                   imageFit="cover"
                 />
               </div>
 
+              {/* Interactive Control Row */}
+              <div className="spiral-controls-row">
+                <button
+                  type="button"
+                  className="spiral-ctrl-btn"
+                  onClick={() => spiralRef.current?.prev()}
+                  title="Foto Sebelumnya"
+                  aria-label="Previous Photo"
+                >
+                  <i className="fa-solid fa-backward-step" />
+                  <span>Sebelumnya</span>
+                </button>
+                <button
+                  type="button"
+                  className={`spiral-ctrl-btn play ${isSpiralPaused ? 'is-paused' : ''}`}
+                  onClick={() => {
+                    const paused = spiralRef.current?.togglePause();
+                    setIsSpiralPaused(Boolean(paused));
+                  }}
+                  title={isSpiralPaused ? 'Putar Otomatis' : 'Jeda Putaran'}
+                  aria-label="Toggle Play Pause"
+                >
+                  <i className={`fa-solid ${isSpiralPaused ? 'fa-play' : 'fa-pause'}`} />
+                  <span>{isSpiralPaused ? 'Putar' : 'Jeda'}</span>
+                </button>
+                <button
+                  type="button"
+                  className="spiral-ctrl-btn"
+                  onClick={() => spiralRef.current?.next()}
+                  title="Foto Selanjutnya"
+                  aria-label="Next Photo"
+                >
+                  <span>Selanjutnya</span>
+                  <i className="fa-solid fa-forward-step" />
+                </button>
+              </div>
+
               <div className="spiral-instruction-badge">
-                <i className={isMobileScreen ? 'fa-solid fa-sparkles' : 'fa-solid fa-arrows-up-down'} />
-                <span>
-                  {isMobileScreen
-                    ? 'Helix 3D berputar otomatis menampilkan momen terindah'
-                    : 'Geser (drag) ke atas/bawah atau arahkan mouse untuk berinteraksi dengan foto'}
-                </span>
+                <i className="fa-solid fa-sparkles" />
+                <span>Ketuk salah satu foto untuk memfokuskannya ke depan, atau gunakan tombol kontrol di atas</span>
               </div>
             </motion.div>
 

@@ -3757,17 +3757,105 @@ section {
   font-size: 0.86rem;
   color: var(--text-silver);
   max-width: 520px;
-  margin: 0 auto;
+  margin: 0 auto 1.1rem auto;
   line-height: 1.6;
 }
 
+/* 3D Mode Selector Tabs */
+.spiral-mode-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(200, 146, 17, 0.08);
+  border: 1px solid rgba(200, 146, 17, 0.28);
+  border-radius: 999px;
+  padding: 0.3rem 0.35rem;
+  backdrop-filter: blur(8px);
+  margin-bottom: 0.85rem;
+}
+
+.spiral-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--gold-deep);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spiral-tab-btn:hover {
+  background: rgba(200, 146, 17, 0.15);
+  transform: translateY(-1px);
+}
+
+.spiral-tab-btn.active {
+  background: linear-gradient(135deg, #dfba73 0%, #c89211 100%);
+  color: #1a1202;
+  box-shadow: 0 4px 14px rgba(200, 146, 17, 0.35);
+  font-weight: 700;
+}
+
 .spiral-stage-wrapper {
-  height: 520px;
+  height: 480px;
   position: relative;
   overflow: hidden;
   border-radius: 18px;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.9) 0%, rgba(250, 245, 235, 0.5) 70%, transparent 100%);
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.95) 0%, rgba(250, 245, 235, 0.6) 70%, transparent 100%);
   border: 1px dashed rgba(200, 146, 17, 0.28);
+}
+
+/* 3D Interactive Controls Row */
+.spiral-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 1.15rem;
+}
+
+.spiral-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.48rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--gold-border-hi);
+  color: var(--gold-deep);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(180, 140, 60, 0.1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spiral-ctrl-btn:hover {
+  background: #ffffff;
+  border-color: var(--gold-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(180, 140, 60, 0.2);
+}
+
+.spiral-ctrl-btn:active {
+  transform: translateY(1px);
+}
+
+.spiral-ctrl-btn.play {
+  padding: 0.48rem 1.25rem;
+  background: linear-gradient(135deg, rgba(223, 186, 115, 0.2), rgba(200, 146, 17, 0.25));
+  border-color: var(--gold-primary);
+}
+
+.spiral-ctrl-btn.play.is-paused {
+  background: linear-gradient(135deg, #dfba73, #c89211);
+  color: #1a1202;
+  font-weight: 700;
 }
 
 .spiral-instruction-badge {
@@ -3775,12 +3863,12 @@ section {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 1.1rem;
-  font-size: 0.78rem;
+  margin-top: 0.9rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: var(--gold-deep);
-  letter-spacing: 0.04em;
-  opacity: 0.9;
+  letter-spacing: 0.03em;
+  opacity: 0.88;
 }
 
 @media (max-width: 768px) {
@@ -3817,14 +3905,37 @@ section {
     line-height: 1.5;
     padding: 0 0.5rem;
   }
+  .spiral-mode-tabs {
+    width: 100%;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.25rem;
+  }
+  .spiral-tab-btn {
+    font-size: 0.68rem;
+    padding: 0.35rem 0.65rem;
+  }
   .spiral-stage-wrapper {
     height: 350px;
     border-radius: 14px;
     touch-action: pan-y;
   }
-  .spiral-instruction-badge {
+  .spiral-controls-row {
+    width: 100%;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .spiral-ctrl-btn {
     font-size: 0.7rem;
-    margin-top: 0.85rem;
+    padding: 0.42rem 0.75rem;
+    gap: 0.35rem;
+  }
+  .spiral-ctrl-btn.play {
+    padding: 0.42rem 0.9rem;
+  }
+  .spiral-instruction-badge {
+    font-size: 0.68rem;
+    margin-top: 0.75rem;
     padding: 0 0.5rem;
     text-align: center;
   }
