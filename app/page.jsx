@@ -1349,25 +1349,29 @@ export default function Home() {
               <div className="spiral-stage-wrapper">
                 <InfiniteSpiral
                   items={SPIRAL_ITEMS}
-                  animationMode="all"
-                  speed={isMobileScreen ? 0.45 : 0.55}
-                  radius={isMobileScreen ? 128 : 180}
-                  cardWidth={isMobileScreen ? 90 : 125}
-                  cardHeight={isMobileScreen ? 90 : 125}
-                  verticalSpacing={isMobileScreen ? 48 : 65}
-                  perspective={isMobileScreen ? 850 : 1000}
-                  cardRadius={isMobileScreen ? 12 : 14}
-                  centerScale={isMobileScreen ? 1.2 : 1.25}
-                  edgeBlur={isMobileScreen ? 3 : 4}
-                  cardsPerTurn={isMobileScreen ? 6 : 7}
+                  animationMode={isMobileScreen ? 'auto' : 'all'}
+                  speed={isMobileScreen ? 0.38 : 0.55}
+                  radius={isMobileScreen ? 88 : 180}
+                  cardWidth={isMobileScreen ? 74 : 125}
+                  cardHeight={isMobileScreen ? 74 : 125}
+                  verticalSpacing={isMobileScreen ? 40 : 65}
+                  perspective={isMobileScreen ? 720 : 1000}
+                  cardRadius={isMobileScreen ? 10 : 14}
+                  centerScale={isMobileScreen ? 1.12 : 1.25}
+                  edgeBlur={isMobileScreen ? 2 : 4}
+                  cardsPerTurn={isMobileScreen ? 5 : 7}
                   pauseOnHover={true}
                   imageFit="cover"
                 />
               </div>
 
               <div className="spiral-instruction-badge">
-                <i className="fa-solid fa-arrows-up-down" />
-                <span>Geser (drag) ke atas/bawah atau arahkan mouse untuk berinteraksi dengan foto</span>
+                <i className={isMobileScreen ? 'fa-solid fa-sparkles' : 'fa-solid fa-arrows-up-down'} />
+                <span>
+                  {isMobileScreen
+                    ? 'Helix 3D berputar otomatis menampilkan momen terindah'
+                    : 'Geser (drag) ke atas/bawah atau arahkan mouse untuk berinteraksi dengan foto'}
+                </span>
               </div>
             </motion.div>
 

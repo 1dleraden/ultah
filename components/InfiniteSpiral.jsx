@@ -114,7 +114,7 @@ const InfiniteSpiral = ({
       const width = Math.max(bounds.width, 1);
       const height = Math.max(bounds.height, 1);
       const fit = Math.min(1, width / (cardWidth * 2.8), height / (cardHeight * 2.35));
-      const responsiveRadius = Math.min(radius, Math.max(72, width * 0.36)) * fit;
+      const responsiveRadius = Math.min(radius, Math.max(60, width * 0.30)) * fit;
       const fadeStart = clamp(1 - edgeFade, 0, 0.98);
       const turnSize = Math.max(cardsPerTurn, 1);
 
@@ -172,25 +172,29 @@ const InfiniteSpiral = ({
     pauseOnHover
   ]);
 
+  const dragEnabled = animationMode === 'drag' || animationMode === 'all';
+
   const rootStyle = {
     perspective: `${perspective}px`,
     '--infinite-spiral-card-width': `${cardWidth}px`,
     '--infinite-spiral-card-height': `${cardHeight}px`,
     '--infinite-spiral-card-radius': `${cardRadius}px`,
-    cursor: animationMode === 'drag' || animationMode === 'all' ? 'grab' : 'default',
-    touchAction: animationMode === 'drag' || animationMode === 'all' ? 'pan-y' : 'auto',
-    userSelect: animationMode === 'drag' || animationMode === 'all' ? 'none' : 'auto'
+    cursor: dragEnabled ? 'grab' : 'default',
+    touchAction: 'pan-y',
+    userSelect: dragEnabled ? 'none' : 'auto'
   };
-
-  const dragEnabled = animationMode === 'drag' || animationMode === 'all';
 
   const stopDragging = event => {
     if (!draggingRef.current) return;
     draggingRef.current = false;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    try {
+      if (event.currentTarget && event.currentTarget.hasPointerCapture && event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch (_) {}
+    if (event.currentTarget && event.currentTarget.style) {
+      event.currentTarget.style.cursor = dragEnabled ? 'grab' : 'default';
     }
-    event.currentTarget.style.cursor = dragEnabled ? 'grab' : 'default';
   };
 
   return (
@@ -205,12 +209,15 @@ const InfiniteSpiral = ({
         hoveredRef.current = false;
       }}
       onPointerDown={event => {
-        if (!dragEnabled || (event.pointerType === 'mouse' && event.button !== 0)) return;
+        // Prevent pointer trapping on touch so native mobile vertical scrolling works 100% smoothly
+        if (!dragEnabled || event.pointerType === 'touch' || (event.pointerType === 'mouse' && event.button !== 0)) return;
         draggingRef.current = true;
         dragMovedRef.current = false;
         lastPointerYRef.current = event.clientY;
         targetProgressRef.current = progressRef.current;
-        event.currentTarget.setPointerCapture(event.pointerId);
+        try {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        } catch (_) {}
         event.currentTarget.style.cursor = 'grabbing';
       }}
       onPointerMove={event => {
