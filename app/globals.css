@@ -931,7 +931,7 @@ section {
 /* Hero Details Row */
 .hero-details-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
   padding-top: 1.8rem;
   border-top: 1px solid var(--border-subtle);
@@ -2572,7 +2572,7 @@ section {
     justify-content: center;
   }
   .hero-details-row {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     width: 100%;
   }
@@ -3747,6 +3747,7 @@ section {
 }
 
 .spiral-heading {
+  display: block;
   font-family: var(--font-royal);
   font-size: 1.55rem;
   letter-spacing: 0.03em;

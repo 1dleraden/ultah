@@ -67,16 +67,16 @@ const GALLERY_ITEMS = [
 ];
 
 const SPIRAL_ITEMS = [
-  { id: 'sp-1', src: '/fel.jpeg', alt: 'Felisha Oktarina', label: 'Felisha · 14.10' },
-  { id: 'sp-2', src: '/momnt1.jpeg', alt: 'Senyum Termani', label: 'Sweet Smile' },
-  { id: 'sp-3', src: '/moment2.jpeg', alt: 'Cerita & Tawa Kita', label: 'Our Laughter' },
-  { id: 'sp-4', src: '/momnt3.jpeg', alt: 'Langkah Bersamamu', label: 'Walking Together' },
-  { id: 'sp-5', src: '/moment4.jpeg', alt: 'Rumah Hatiku', label: 'Warm Home' },
-  { id: 'sp-6', src: '/fel.jpeg', alt: 'Tatapan Favoritku', label: 'Favorite Person' },
-  { id: 'sp-7', src: '/momnt1.jpeg', alt: 'Kebahagiaan Murni', label: 'Pure Bliss' },
-  { id: 'sp-8', src: '/moment2.jpeg', alt: 'Obrolan Larut Malam', label: 'Late Talks' },
-  { id: 'sp-9', src: '/momnt3.jpeg', alt: 'Petualangan Berdua', label: 'Journey' },
-  { id: 'sp-10', src: '/moment4.jpeg', alt: 'Selamanya Untukmu', label: 'Forever Mine' },
+  { id: 'sp-1', src: '/fel.jpeg', alt: 'Felisha Oktarina' },
+  { id: 'sp-2', src: '/momnt1.jpeg', alt: 'Senyum Termani' },
+  { id: 'sp-3', src: '/moment2.jpeg', alt: 'Cerita & Tawa Kita' },
+  { id: 'sp-4', src: '/momnt3.jpeg', alt: 'Langkah Bersamamu' },
+  { id: 'sp-5', src: '/moment4.jpeg', alt: 'Rumah Hatiku' },
+  { id: 'sp-6', src: '/fel.jpeg', alt: 'Tatapan Favoritku' },
+  { id: 'sp-7', src: '/momnt1.jpeg', alt: 'Kebahagiaan Murni' },
+  { id: 'sp-8', src: '/moment2.jpeg', alt: 'Obrolan Larut Malam' },
+  { id: 'sp-9', src: '/momnt3.jpeg', alt: 'Petualangan Berdua' },
+  { id: 'sp-10', src: '/moment4.jpeg', alt: 'Selamanya Untukmu' },
 ];
 
 
@@ -336,8 +336,6 @@ export default function Home() {
 
   // Responsive Mobile Viewport Detection
   const [isMobileScreen, setIsMobileScreen] = useState(false);
-  const [spiralMode, setSpiralMode] = useState('ring'); // 'ring' (pristine 3D carousel) or 'helix' (gentle 3D staircase)
-  const [isSpiralPaused, setIsSpiralPaused] = useState(false);
   const spiralRef = useRef(null);
 
   useEffect(() => {
@@ -612,6 +610,7 @@ export default function Home() {
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
+      setIsAudioDockMinimized(true);
     } else {
       if (!audio.src || audio.src === '' || audio.src === window.location.href) {
         audio.src = PLAYLIST[currentTrackIndex].src;
@@ -1282,15 +1281,6 @@ export default function Home() {
                 </div>
                 <div className="hero-detail-item">
                   <div className="detail-icon-box">
-                    <i className="fa-solid fa-heart" />
-                  </div>
-                  <div className="detail-body">
-                    <span className="detail-label">WITH ALL MY HEART</span>
-                    <span className="detail-value">From Raden to Felisha</span>
-                  </div>
-                </div>
-                <div className="hero-detail-item">
-                  <div className="detail-icon-box">
                     <i className="fa-solid fa-music" />
                   </div>
                   <div className="detail-body">
@@ -1341,35 +1331,10 @@ export default function Home() {
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="spiral-showcase-header">
-                <span className="spiral-tag">
-                  <i className="fa-solid fa-cube" /> GALERI 3D MEMORI FELISHA
-                </span>
-                <h3 className="gold-gradient-text spiral-heading">
-                  {spiralMode === 'ring' ? 'Orbit Carousel 3D Felisha' : 'Spiral 3D Memori Kita'}
-                </h3>
+                <h3 className="gold-gradient-text spiral-heading">Memory</h3>
                 <p className="spiral-sub">
                   Koleksi potret terindah Felisha Oktarina yang berputar dalam dimensi 3D elegan.
                 </p>
-
-                {/* Mode Selector Tabs */}
-                <div className="spiral-mode-tabs">
-                  <button
-                    type="button"
-                    className={`spiral-tab-btn ${spiralMode === 'ring' ? 'active' : ''}`}
-                    onClick={() => setSpiralMode('ring')}
-                  >
-                    <i className="fa-solid fa-circle-notch" />
-                    <span>Carousel Melingkar (Rapi)</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`spiral-tab-btn ${spiralMode === 'helix' ? 'active' : ''}`}
-                    onClick={() => setSpiralMode('helix')}
-                  >
-                    <i className="fa-solid fa-dna" />
-                    <span>Spiral Tangga 3D</span>
-                  </button>
-                </div>
               </div>
 
               <div className="spiral-stage-wrapper">
@@ -1378,26 +1343,10 @@ export default function Home() {
                   items={SPIRAL_ITEMS}
                   animationMode="auto"
                   speed={isMobileScreen ? 0.32 : 0.42}
-                  radius={
-                    spiralMode === 'ring'
-                      ? (isMobileScreen ? 112 : 190)
-                      : (isMobileScreen ? 94 : 170)
-                  }
-                  cardWidth={
-                    spiralMode === 'ring'
-                      ? (isMobileScreen ? 88 : 124)
-                      : (isMobileScreen ? 78 : 115)
-                  }
-                  cardHeight={
-                    spiralMode === 'ring'
-                      ? (isMobileScreen ? 88 : 124)
-                      : (isMobileScreen ? 78 : 115)
-                  }
-                  verticalSpacing={
-                    spiralMode === 'ring'
-                      ? 0
-                      : (isMobileScreen ? 24 : 44)
-                  }
+                  radius={isMobileScreen ? 112 : 190}
+                  cardWidth={isMobileScreen ? 88 : 124}
+                  cardHeight={isMobileScreen ? 88 : 124}
+                  verticalSpacing={0}
                   perspective={isMobileScreen ? 780 : 1000}
                   cardRadius={isMobileScreen ? 12 : 14}
                   centerScale={isMobileScreen ? 1.18 : 1.25}
@@ -1409,46 +1358,9 @@ export default function Home() {
                 />
               </div>
 
-              {/* Interactive Control Row */}
-              <div className="spiral-controls-row">
-                <button
-                  type="button"
-                  className="spiral-ctrl-btn"
-                  onClick={() => spiralRef.current?.prev()}
-                  title="Foto Sebelumnya"
-                  aria-label="Previous Photo"
-                >
-                  <i className="fa-solid fa-backward-step" />
-                  <span>Sebelumnya</span>
-                </button>
-                <button
-                  type="button"
-                  className={`spiral-ctrl-btn play ${isSpiralPaused ? 'is-paused' : ''}`}
-                  onClick={() => {
-                    const paused = spiralRef.current?.togglePause();
-                    setIsSpiralPaused(Boolean(paused));
-                  }}
-                  title={isSpiralPaused ? 'Putar Otomatis' : 'Jeda Putaran'}
-                  aria-label="Toggle Play Pause"
-                >
-                  <i className={`fa-solid ${isSpiralPaused ? 'fa-play' : 'fa-pause'}`} />
-                  <span>{isSpiralPaused ? 'Putar' : 'Jeda'}</span>
-                </button>
-                <button
-                  type="button"
-                  className="spiral-ctrl-btn"
-                  onClick={() => spiralRef.current?.next()}
-                  title="Foto Selanjutnya"
-                  aria-label="Next Photo"
-                >
-                  <span>Selanjutnya</span>
-                  <i className="fa-solid fa-forward-step" />
-                </button>
-              </div>
-
               <div className="spiral-instruction-badge">
                 <i className="fa-solid fa-sparkles" />
-                <span>Ketuk salah satu foto untuk memfokuskannya ke depan, atau gunakan tombol kontrol di atas</span>
+                <span>Ketuk salah satu foto untuk memfokuskannya ke depan</span>
               </div>
             </motion.div>
 
