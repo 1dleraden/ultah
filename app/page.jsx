@@ -1053,29 +1053,7 @@ export default function Home() {
             <h1 className="preloader-title">Felisha Oktarina</h1>
             <p className="preloader-date">14 · OCTOBER · OUR SPECIAL DAY</p>
 
-            {!birthdayCountdown.isBirthdayToday ? (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.35rem 0.95rem',
-                  borderRadius: '999px',
-                  background: 'rgba(200, 146, 17, 0.1)',
-                  border: '1px solid rgba(200, 146, 17, 0.35)',
-                  fontSize: '0.78rem',
-                  color: 'var(--gold-deep)',
-                  margin: '0.5rem 0 1.1rem 0',
-                  fontWeight: 600,
-                  backdropFilter: 'blur(8px)',
-                }}
-              >
-                <span>⏳ Menuju Hari-H:</span>
-                <span style={{ fontFamily: 'var(--font-sans)', letterSpacing: '0.04em', color: 'var(--text-white)', fontWeight: 700 }}>
-                  {String(birthdayCountdown.days).padStart(2, '0')}h : {String(birthdayCountdown.hours).padStart(2, '0')}j : {String(birthdayCountdown.minutes).padStart(2, '0')}m : {String(birthdayCountdown.seconds).padStart(2, '0')}d
-                </span>
-              </div>
-            ) : (
+            {birthdayCountdown.isBirthdayToday && (
               <div className="preloader-harih-badge">
                 <span className="popper-emoji-bounce">🎉</span>
                 <span>HARI INI HARI-H ULANG TAHUN FELISHA!</span>
