@@ -1051,7 +1051,7 @@ export default function Home() {
 
             <span className="preloader-tag">A SPECIAL BIRTHDAY TRIBUTE</span>
             <h1 className="preloader-title">Felisha Oktarina</h1>
-            <p className="preloader-date">14 · OCTOBER · OUR SPECIAL DAY</p>
+            <p className="preloader-date">14 OKTOBER 2010 · HARI ISTIMEWA KAMU</p>
 
             {birthdayCountdown.isBirthdayToday && (
               <div className="preloader-harih-badge">
@@ -1343,8 +1343,8 @@ export default function Home() {
                     <i className="fa-regular fa-calendar-days" />
                   </div>
                   <div className="detail-body">
-                    <span className="detail-label">OUR SPECIAL DAY</span>
-                    <span className="detail-value">October 14</span>
+                    <span className="detail-label">HARI ISTIMEWA KAMU</span>
+                    <span className="detail-value">14 Oktober 2010</span>
                   </div>
                 </div>
                 <div className="hero-detail-item">
