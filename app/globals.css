@@ -111,17 +111,110 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* ─── AMBIENT ROYAL LIGHTING (WARM SUNLIT CHAMPAGNE RADIANCE) ─── */
-.ambient-glow {
+/* ─── LIVING ROYAL AMBIENT BACKDROP ─── */
+.ambient-backdrop {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+}
+
+.ambient-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   background: 
-    radial-gradient(circle at 50% 8%, rgba(245, 197, 24, 0.12) 0%, transparent 60%),
-    radial-gradient(circle at 10% 40%, rgba(254, 243, 199, 0.7) 0%, transparent 50%),
-    radial-gradient(circle at 90% 70%, rgba(253, 230, 138, 0.45) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(255, 253, 247, 0.92) 0%, var(--bg-deep) 100%);
+    radial-gradient(circle at 50% 0%, rgba(245, 197, 24, 0.16) 0%, transparent 60%),
+    radial-gradient(circle at 10% 35%, rgba(254, 243, 199, 0.75) 0%, transparent 55%),
+    radial-gradient(circle at 90% 65%, rgba(253, 230, 138, 0.55) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(255, 253, 247, 0.95) 0%, var(--bg-deep) 100%);
+}
+
+/* Haute Luxury Filigree Watermark Pattern */
+.ambient-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.048;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c89211' stroke-width='0.75'%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3Ccircle cx='40' cy='40' r='6' fill='%23c89211' fill-opacity='0.25'/%3E%3Cpath d='M40 10 L40 70 M10 40 L70 40' stroke-dasharray='2,3'/%3E%3Cpath d='M40 22 L42 38 L58 40 L42 42 L40 58 L38 42 L22 40 L38 38 Z' fill='%23c89211' fill-opacity='0.15'/%3E%3Ccircle cx='0' cy='0' r='1.5' fill='%23c89211'/%3E%3Ccircle cx='80' cy='0' r='1.5' fill='%23c89211'/%3E%3Ccircle cx='0' cy='80' r='1.5' fill='%23c89211'/%3E%3Ccircle cx='80' cy='80' r='1.5' fill='%23c89211'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 80px 80px;
+}
+
+/* Floating Living Romantic Aurora Orbs */
+.ambient-aurora {
+  position: absolute;
+  inset: -15%;
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.65;
+  overflow: hidden;
+}
+
+.aurora-orb {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.orb-gold-1 {
+  width: 580px;
+  height: 580px;
+  top: -80px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.42) 0%, rgba(245, 158, 11, 0.18) 55%, transparent 75%);
+  animation: floatOrb1 20s infinite ease-in-out alternate;
+}
+
+.orb-rose-2 {
+  width: 640px;
+  height: 640px;
+  top: 30%;
+  right: -140px;
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.32) 0%, rgba(251, 146, 60, 0.22) 50%, transparent 75%);
+  animation: floatOrb2 25s infinite ease-in-out alternate;
+}
+
+.orb-champagne-3 {
+  width: 720px;
+  height: 720px;
+  bottom: -5%;
+  left: 6%;
+  background: radial-gradient(circle, rgba(254, 240, 138, 0.48) 0%, rgba(253, 230, 138, 0.22) 55%, transparent 75%);
+  animation: floatOrb3 28s infinite ease-in-out alternate;
+}
+
+.orb-honey-4 {
+  width: 520px;
+  height: 520px;
+  top: 55%;
+  left: 55%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.32) 0%, rgba(217, 119, 6, 0.15) 55%, transparent 75%);
+  animation: floatOrb4 22s infinite ease-in-out alternate;
+}
+
+@keyframes floatOrb1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(110px, 90px) scale(1.12); }
+  100% { transform: translate(50px, 160px) scale(0.96); }
+}
+
+@keyframes floatOrb2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-120px, 110px) scale(1.18); }
+  100% { transform: translate(-60px, -70px) scale(0.92); }
+}
+
+@keyframes floatOrb3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(90px, -80px) scale(1.1); }
+  100% { transform: translate(-80px, 60px) scale(1.04); }
+}
+
+@keyframes floatOrb4 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-110px, -70px) scale(1.14); }
+  100% { transform: translate(70px, -90px) scale(0.88); }
 }
 
 /* ─── HAUTE ROYAL CINEMATIC PRELOADER ─── */
@@ -2164,13 +2257,13 @@ section {
   box-shadow: 0 0 12px rgba(200, 146, 17, 0.45);
 }
 
-/* ─── AMBIENT PARTICLE CANVAS ─── */
+/* ─── AMBIENT PARTICLE & STARDUST CANVAS ─── */
 #ambient-particles-canvas {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-  opacity: 0.45;
+  z-index: 2;
+  opacity: 0.92;
 }
 
 /* ─── WISH ACTIONS & REACTIONS ─── */

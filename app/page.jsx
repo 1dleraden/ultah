@@ -387,7 +387,16 @@ export default function Home() {
 
   // Mobile Navigation & Audio Dock Controls
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAudioDockMinimized, setIsAudioDockMinimized] = useState(false);
+  const [isAudioDockMinimized, setIsAudioDockMinimized] = useState(true);
+
+  // Auto-minimize floating audio dock whenever music is paused / not playing
+  useEffect(() => {
+    if (!isPlaying) {
+      setIsAudioDockMinimized(true);
+    } else {
+      setIsAudioDockMinimized(false);
+    }
+  }, [isPlaying]);
 
   // Ambient Particles Canvas Ref
   const canvasRef = useRef(null);
@@ -454,7 +463,7 @@ export default function Home() {
     }, 1250);
   };
 
-  // Ambient Floating Warm Rose & Gold Particles Canvas
+  // Ambient Floating Stardust, Twinkling Stars & Interactive Cursor Shimmer
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -468,39 +477,147 @@ export default function Home() {
     resize();
     window.addEventListener('resize', resize);
 
-    const particles = Array.from({ length: 35 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 2 + 0.8,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: -Math.random() * 0.45 - 0.15,
-      alpha: Math.random() * 0.5 + 0.25,
-      pulse: Math.random() * 0.02 + 0.01,
-      color: Math.random() > 0.4 ? 'rgba(223, 186, 115,' : 'rgba(232, 96, 122,',
-    }));
+    // Star draw helper (4-point sparkle flare)
+    const drawStar = (x, y, size, color, alpha, rotation = 0) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.fillStyle = `${color} ${alpha})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = 'rgba(245, 197, 24, 0.7)';
+      ctx.beginPath();
+      for (let i = 0; i < 4; i++) {
+        const a = (i * Math.PI) / 2;
+        const na = a + Math.PI / 4;
+        ctx.lineTo(Math.cos(a) * size, Math.sin(a) * size);
+        ctx.lineTo(Math.cos(na) * (size * 0.22), Math.sin(na) * (size * 0.22));
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    };
 
+    // Petal / Heart glimmer helper
+    const drawPetal = (x, y, size, color, alpha, rotation = 0) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.fillStyle = `${color} ${alpha})`;
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = 'rgba(244, 114, 182, 0.4)';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, size, size * 0.55, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    // Ambient floating particles
+    const particles = Array.from({ length: 65 }, () => {
+      const type = Math.random() < 0.4 ? 'star' : Math.random() < 0.85 ? 'orb' : 'petal';
+      return {
+        type,
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: type === 'star' ? Math.random() * 4.5 + 2.5 : type === 'petal' ? Math.random() * 3.5 + 2 : Math.random() * 2.8 + 1.2,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: -Math.random() * 0.35 - 0.12,
+        swayOffset: Math.random() * Math.PI * 2,
+        swaySpeed: Math.random() * 0.015 + 0.008,
+        swayAmp: Math.random() * 0.6 + 0.2,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.012,
+        baseAlpha: Math.random() * 0.4 + 0.35,
+        pulseSpeed: Math.random() * 0.025 + 0.015,
+        color:
+          Math.random() > 0.35
+            ? 'rgba(223, 175, 75,'
+            : Math.random() > 0.5
+            ? 'rgba(245, 197, 24,'
+            : 'rgba(244, 114, 182,',
+      };
+    });
+
+    // Interactive pointer stardust
+    const interactiveSparks = [];
+    let lastSparkTime = 0;
+
+    const handlePointerMove = (e) => {
+      const now = performance.now();
+      if (now - lastSparkTime < 45) return;
+      lastSparkTime = now;
+
+      const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+      const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : null);
+      if (clientX === null || clientY === null) return;
+
+      if (interactiveSparks.length < 28) {
+        interactiveSparks.push({
+          x: clientX + (Math.random() - 0.5) * 12,
+          y: clientY + (Math.random() - 0.5) * 12,
+          size: Math.random() * 4 + 2,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: -Math.random() * 0.8 - 0.3,
+          alpha: 0.85,
+          decay: Math.random() * 0.02 + 0.016,
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.05,
+          color: Math.random() > 0.4 ? 'rgba(245, 197, 24,' : 'rgba(253, 224, 71,',
+        });
+      }
+    };
+
+    window.addEventListener('mousemove', handlePointerMove, { passive: true });
+    window.addEventListener('touchmove', handlePointerMove, { passive: true });
+
+    let t = 0;
     const render = () => {
+      t += 1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Render ambient particles
       particles.forEach((p) => {
-        p.x += p.vx;
         p.y += p.vy;
-        p.alpha += Math.sin(Date.now() * p.pulse) * 0.005;
+        p.x += Math.sin(t * p.swaySpeed + p.swayOffset) * p.swayAmp + p.vx;
+        p.rotation += p.rotSpeed;
 
-        if (p.y < -10) {
-          p.y = canvas.height + 10;
+        if (p.y < -15) {
+          p.y = canvas.height + 15;
           p.x = Math.random() * canvas.width;
         }
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
+        if (p.x < -15) p.x = canvas.width + 15;
+        if (p.x > canvas.width + 15) p.x = -15;
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `${p.color} ${Math.max(0.12, Math.min(0.75, p.alpha))})`;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = 'rgba(223, 186, 115, 0.4)';
-        ctx.fill();
+        const currentAlpha = Math.max(0.1, Math.min(0.9, p.baseAlpha + Math.sin(t * p.pulseSpeed + p.swayOffset) * 0.25));
+
+        if (p.type === 'star') {
+          drawStar(p.x, p.y, p.size, p.color, currentAlpha, p.rotation);
+        } else if (p.type === 'petal') {
+          drawPetal(p.x, p.y, p.size, p.color, currentAlpha, p.rotation);
+        } else {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `${p.color} ${currentAlpha})`;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = 'rgba(223, 175, 75, 0.45)';
+          ctx.fill();
+        }
       });
+
+      // Render interactive pointer sparks
+      for (let i = interactiveSparks.length - 1; i >= 0; i--) {
+        const s = interactiveSparks[i];
+        s.x += s.vx;
+        s.y += s.vy;
+        s.alpha -= s.decay;
+        s.rotation += s.rotSpeed;
+
+        if (s.alpha <= 0.05) {
+          interactiveSparks.splice(i, 1);
+          continue;
+        }
+
+        drawStar(s.x, s.y, s.size, s.color, s.alpha, s.rotation);
+      }
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -508,6 +625,8 @@ export default function Home() {
 
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('touchmove', handlePointerMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -619,10 +738,14 @@ export default function Home() {
       const promise = audio.play();
       if (promise !== undefined) {
         promise
-          .then(() => setIsPlaying(true))
+          .then(() => {
+            setIsPlaying(true);
+            setIsAudioDockMinimized(false);
+          })
           .catch((err) => {
             console.warn('Play prevented:', err);
             setIsPlaying(false);
+            setIsAudioDockMinimized(true);
           });
       }
     }
@@ -887,12 +1010,23 @@ export default function Home() {
       {/* ─── HAUTE GOLD SCROLL PROGRESS BAR ─── */}
       <motion.div className="scroll-progress-bar" style={{ scaleX }} />
 
-      {/* ─── AMBIENT PARTICLES CANVAS ─── */}
+      {/* ─── LIVING ROYAL AMBIENT BACKDROP ─── */}
+      <div className="ambient-backdrop" aria-hidden="true">
+        <div className="ambient-glow" />
+        <div className="ambient-pattern" />
+        <div className="ambient-aurora">
+          <div className="aurora-orb orb-gold-1" />
+          <div className="aurora-orb orb-rose-2" />
+          <div className="aurora-orb orb-champagne-3" />
+          <div className="aurora-orb orb-honey-4" />
+        </div>
+      </div>
+
+      {/* ─── AMBIENT PARTICLES & INTERACTIVE STARDUST CANVAS ─── */}
       <canvas id="ambient-particles-canvas" ref={canvasRef} />
 
       {/* ─── FILM GRAIN & AMBIENT ATMOSPHERE ─── */}
       <div className="film-grain" aria-hidden="true" />
-      <div className="ambient-glow" aria-hidden="true" />
 
       {/* ─── CINEMATIC ROMANTIC PRELOADER ─── */}
       {!isPreloaderUnmounted && (
@@ -1205,48 +1339,6 @@ export default function Home() {
                 <span>TODAY IS ALL ABOUT YOU · OCTOBER 14</span>
               </div>
 
-              {/* ─── GRAND LUXURY BIRTHDAY COUNTDOWN (HIDDEN ON HARI-H) ─── */}
-              {!birthdayCountdown.isBirthdayToday && (
-                <div className="luxury-countdown-card">
-                  <div className="countdown-card-header">
-                    <span className="countdown-pulse-dot" />
-                    <span className="countdown-card-title">
-                      COUNTDOWN TO OCTOBER 14 · HARI SPESIAL FELISHA
-                    </span>
-                  </div>
-
-                  <div className="countdown-digits-grid">
-                    <div className="digit-box">
-                      <span className="digit-num gold-gradient-text">
-                        {String(birthdayCountdown.days).padStart(2, '0')}
-                      </span>
-                      <span className="digit-label">HARI</span>
-                    </div>
-                    <span className="digit-colon">:</span>
-                    <div className="digit-box">
-                      <span className="digit-num gold-gradient-text">
-                        {String(birthdayCountdown.hours).padStart(2, '0')}
-                      </span>
-                      <span className="digit-label">JAM</span>
-                    </div>
-                    <span className="digit-colon">:</span>
-                    <div className="digit-box">
-                      <span className="digit-num gold-gradient-text">
-                        {String(birthdayCountdown.minutes).padStart(2, '0')}
-                      </span>
-                      <span className="digit-label">MENIT</span>
-                    </div>
-                    <span className="digit-colon">:</span>
-                    <div className="digit-box digit-box-seconds">
-                      <span className="digit-num gold-gradient-text">
-                        {String(birthdayCountdown.seconds).padStart(2, '0')}
-                      </span>
-                      <span className="digit-label">DETIK</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               <h1 className="hero-title">
                 <span className="hero-title-prefix">Happy Birthday,</span>
                 <span className="hero-title-name gold-gradient-text">Felisha Oktarina.</span>
@@ -1257,8 +1349,6 @@ export default function Home() {
               </p>
 
               <div className="regal-divider">
-                <span className="divider-line" />
-                <span className="divider-crest">🌹</span>
                 <span className="divider-line" />
               </div>
 
@@ -1313,8 +1403,6 @@ export default function Home() {
               <span className="chapter-number">MOMEN-MOMEN MANIS KITA</span>
               <h2 className="section-heading gold-gradient-text">Kenangan yg Tidak Akan Bisa Terulang Lagi</h2>
               <div className="regal-divider mini">
-                <span className="divider-line" />
-                <span className="divider-crest">🌹</span>
                 <span className="divider-line" />
               </div>
               <p className="section-desc">
@@ -1462,8 +1550,6 @@ export default function Home() {
               <span className="chapter-number">A LETTER FROM MY HEART</span>
               <h2 className="section-heading gold-gradient-text">Love Letter for Felisha</h2>
               <div className="regal-divider mini">
-                <span className="divider-line" />
-                <span className="divider-crest">💌</span>
                 <span className="divider-line" />
               </div>
               <p className="section-desc">
@@ -1623,8 +1709,6 @@ export default function Home() {
               <span className="chapter-number">MAKE A BIRTHDAY WISH</span>
               <h2 className="section-heading gold-gradient-text">Blow Out Your Birthday Cake</h2>
               <div className="regal-divider mini">
-                <span className="divider-line" />
-                <span className="divider-crest">🎂</span>
                 <span className="divider-line" />
               </div>
               <p className="section-desc">
@@ -1852,8 +1936,6 @@ export default function Home() {
               <h2 className="section-heading gold-gradient-text">Three Things That Make Me Fall in Love with You</h2>
               <div className="regal-divider mini">
                 <span className="divider-line" />
-                <span className="divider-crest">❤️</span>
-                <span className="divider-line" />
               </div>
               <p className="section-desc">
                 The little things about you that might seem simple to you, but are infinitely precious and extraordinary in my eyes.
@@ -1908,12 +1990,9 @@ export default function Home() {
       {/* ─── ROMANTIC FOOTER ─── */}
       <footer className="footer-editorial">
         <div className="content-wrapper text-center">
-          <div className="footer-crest">🌹</div>
           <p className="footer-title gold-gradient-text">Happy Birthday, Felisha Oktarina</p>
           <p className="footer-subtitle">October 14 · Made with All My Love</p>
           <div className="regal-divider mini">
-            <span className="divider-line" />
-            <span className="divider-crest">❤️</span>
             <span className="divider-line" />
           </div>
           <p className="footer-copy">
@@ -1934,8 +2013,14 @@ export default function Home() {
           onEnded={nextTrack}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
+          onPlay={() => {
+            setIsPlaying(true);
+            setIsAudioDockMinimized(false);
+          }}
+          onPause={() => {
+            setIsPlaying(false);
+            setIsAudioDockMinimized(true);
+          }}
         />
 
         {isAudioDockMinimized ? (
